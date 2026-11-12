@@ -17,6 +17,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
      */
     public Ventana1Captacion() {
         initComponents();
+        actualizarImagenFuente();
     }
 
     /**
@@ -42,6 +43,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         btnCalcular = new javax.swing.JButton();
+        lblImagenFuente = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -50,6 +52,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
         txtCaudal.setText("10.0");
 
         cbFuente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Doméstica", "Industrial", "Hospitalaria" }));
+        cbFuente.addActionListener(this::cbFuenteActionPerformed);
 
         buttonGroup1.add(rbNormal);
         rbNormal.setText("Normal");
@@ -88,36 +91,43 @@ public class Ventana1Captacion extends javax.swing.JFrame {
                         .addComponent(btnSiguiente))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(txtCaudal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(cbFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 343, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rbNormal)
                             .addComponent(rbLluvia)
                             .addComponent(rbFalla)
                             .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnCalcular))))
+                            .addComponent(btnCalcular)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(cbFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(lblImagenFuente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(txtCaudal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtCaudal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCaudal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblImagenFuente, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -127,15 +137,15 @@ public class Ventana1Captacion extends javax.swing.JFrame {
                         .addComponent(rbLluvia)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rbFalla)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
-                        .addComponent(btnSiguiente))
+                        .addGap(59, 59, 59))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCalcular)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btnCalcular)))
+                .addGap(18, 18, 18)
+                .addComponent(btnSiguiente)
                 .addContainerGap())
         );
 
@@ -209,6 +219,12 @@ public class Ventana1Captacion extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCalcularActionPerformed
 
+    private void cbFuenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFuenteActionPerformed
+                                        
+    actualizarImagenFuente();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbFuenteActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -233,7 +249,45 @@ public class Ventana1Captacion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new Ventana1Captacion().setVisible(true));
     }
+    
+      private void actualizarImagenFuente() {
+    if (cbFuente.getSelectedItem() == null) return;
+    
+    String seleccion = cbFuente.getSelectedItem().toString().trim();
+    String rutaImagen = " ";
 
+    // Comparación flexible (soporta opciones con y sin tilde)
+    // Reemplaza las líneas 260 a 266 por este bloque:
+    if (seleccion.toLowerCase().startsWith("dom")) {
+    rutaImagen = "/images/domestica.png";
+    } else if (seleccion.toLowerCase().startsWith("ind")) {
+    rutaImagen = "/images/industrial.png";
+    } else if (seleccion.toLowerCase().startsWith("hosp")) {
+    rutaImagen = "/images/hospitalaria.png";
+    } else {
+        lblImagenFuente.setIcon(null);
+        lblImagenFuente.setText("");
+        return;
+    }
+
+    java.net.URL imgURL = getClass().getResource(rutaImagen);
+    if (imgURL != null) {
+        javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(imgURL);
+        
+        // Toma el ancho y alto del JLabel en la interfaz (o 64px si aún no se ha dibujado)
+        int ancho = lblImagenFuente.getWidth() > 0 ? lblImagenFuente.getWidth() : 64;
+        int alto = lblImagenFuente.getHeight() > 0 ? lblImagenFuente.getHeight() : 64;
+        
+        // Escala la imagen para que encaje perfectamente dentro del control
+        java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(ancho, alto, java.awt.Image.SCALE_SMOOTH);
+        
+        lblImagenFuente.setIcon(new javax.swing.ImageIcon(imagenEscalada));
+        lblImagenFuente.setText(""); // Elimina el mensaje "Sin imagen"
+    } else {
+        lblImagenFuente.setIcon(null);
+        lblImagenFuente.setText("Sin imagen");
+    }
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCalcular;
     private javax.swing.JButton btnSiguiente;
@@ -244,6 +298,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblImagenFuente;
     private javax.swing.JRadioButton rbFalla;
     private javax.swing.JRadioButton rbLluvia;
     private javax.swing.JRadioButton rbNormal;
