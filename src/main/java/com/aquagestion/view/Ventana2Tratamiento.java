@@ -80,42 +80,32 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
 
         pnlAlerta.setBackground(new java.awt.Color(255, 235, 235));
         pnlAlerta.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0), 2));
+        pnlAlerta.setMinimumSize(new java.awt.Dimension(240, 110));
+        pnlAlerta.setPreferredSize(new java.awt.Dimension(240, 110));
 
-        lblAlertaTexto.setText("¡ALERTA OPERATIVA - CAPACIDAD INSUFICIENTE!");
+        lblAlertaTexto.setText("<html><body style='width: 210px; text-align: center; font-family: sans-serif; font-size: 10px;'><b>⚠ ¡ALERTA OPERATIVA - CAPACIDAD INSUFFICIENTES!</b><br><br>\"Las Rejillas Básicas (70%) no son suficientes para el nivel actual de sólidos/caudal. Riesgo de desbordamiento.\"</body></html>");
 
         javax.swing.GroupLayout pnlAlertaLayout = new javax.swing.GroupLayout(pnlAlerta);
         pnlAlerta.setLayout(pnlAlertaLayout);
         pnlAlertaLayout.setHorizontalGroup(
             pnlAlertaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAlertaLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblAlertaTexto)
+            .addGroup(pnlAlertaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblAlertaTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 224, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlAlertaLayout.setVerticalGroup(
             pnlAlertaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlAlertaLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(lblAlertaTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(lblAlertaTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 94, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(93, 93, 93)
-                .addComponent(lblImgRejillas, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblImgSedimentador, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(91, 91, 91))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(rbRejillas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rbSedimentador)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -125,16 +115,27 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                         .addComponent(btnSiguiente))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblSstInicial)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(84, 84, 84)
+                                .addComponent(lblImgRejillas, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(113, 113, 113)
+                                .addComponent(lblImgSedimentador, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblSstSalida)
-                                    .addComponent(lblLodosRetenidos)))
-                            .addComponent(lblQreal))
+                                    .addComponent(lblLodosRetenidos)
+                                    .addComponent(lblSstSalida)))
+                            .addComponent(lblQreal)
+                            .addComponent(lblSstInicial))
                         .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(rbRejillas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbSedimentador)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,25 +144,25 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                 .addComponent(lblQreal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblSstInicial)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblImgSedimentador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblImgRejillas, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(lblImgRejillas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblImgSedimentador, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rbRejillas)
                     .addComponent(rbSedimentador))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(34, 34, 34)
-                                .addComponent(lblLodosRetenidos))
-                            .addComponent(lblSstSalida))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(24, 24, 24)
+                        .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblSstSalida)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblLodosRetenidos)
+                        .addGap(45, 45, 45)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVolver)
                     .addComponent(btnSiguiente))
@@ -216,12 +217,15 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
 
         // Mostrar u ocultar la alerta roja de sobrecapacidad
         if (filtro.tieneRiesgoDesbordamiento()) {
-            pnlAlerta.setVisible(true);
-            lblAlertaTexto.setText("<html><center><b>⚠️ ¡ALERTA OPERATIVA - CAPACIDAD INSUFICIENTE!</b><br><br>"
-                    + "\"Las Rejillas Básicas (70%) no son suficientes para el nivel actual de sólidos/caudal. "
-                    + "Riesgo de desbordamiento.\"</center></html>");
+        pnlAlerta.setVisible(true);
+    
+        lblAlertaTexto.setText("<html><body style='width: 175px; text-align: center; font-family: sans-serif; font-size: 9px;'>"
+        + "<b>&#9888; ¡ALERTA OPERATIVA!</b><br>"
+        + "<b>CAPACIDAD INSUFFICIENTES</b><br><br>"
+        + "\"Las Rejillas Básicas (70%) no son suficientes para el nivel actual. Riesgo de desbordamiento.\""
+        + "</body></html>");
         } else {
-            pnlAlerta.setVisible(false);
+        pnlAlerta.setVisible(false);
         }
     
     }//GEN-LAST:event_btnSiguienteActionPerformed
@@ -264,26 +268,28 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new Ventana2Tratamiento().setVisible(true));
     }
 private void cargarImagenesFijas() {
-    // Cargar imagen de Rejillas
-    java.net.URL urlRejillas = getClass().getResource("/images/rejillas.png");
-    if (urlRejillas != null) {
-        javax.swing.ImageIcon icon = new javax.swing.ImageIcon(urlRejillas);
-        java.awt.Image img = icon.getImage().getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH);
-        lblImgRejillas.setIcon(new javax.swing.ImageIcon(img));
-        lblImgRejillas.setText("");
-    } else {
-        lblImgRejillas.setText("[Img Rejillas]");
-    }
+    escalarImagenEnLabel(lblImgRejillas, "/images/rejillas.jpg", "[Img Rejillas]");
+    escalarImagenEnLabel(lblImgSedimentador, "/images/sedimentador.jpg", "[Img Sedimentador]");
+}
 
-    // Cargar imagen de Sedimentador
-    java.net.URL urlSedimentador = getClass().getResource("/images/sedimentador.png");
-    if (urlSedimentador != null) {
-        javax.swing.ImageIcon icon = new javax.swing.ImageIcon(urlSedimentador);
-        java.awt.Image img = icon.getImage().getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH);
-        lblImgSedimentador.setIcon(new javax.swing.ImageIcon(img));
-        lblImgSedimentador.setText("");
+private void escalarImagenEnLabel(javax.swing.JLabel label, String ruta, String textoFallback) {
+    java.net.URL url = getClass().getResource(ruta);
+    if (url != null) {
+        // Obtiene el tamaño real del JLabel en el diseño (o su tamaño preferido si aún no se dibuja)
+        int ancho = label.getWidth() > 0 ? label.getWidth() : label.getPreferredSize().width;
+        int alto = label.getHeight() > 0 ? label.getHeight() : label.getPreferredSize().height;
+
+        // Respaldo de seguridad en caso de que ambos sean 0
+        if (ancho <= 0) ancho = 80;
+        if (alto <= 0) alto = 80;
+
+        javax.swing.ImageIcon icon = new javax.swing.ImageIcon(url);
+        java.awt.Image img = icon.getImage().getScaledInstance(ancho, alto, java.awt.Image.SCALE_SMOOTH);
+        label.setIcon(new javax.swing.ImageIcon(img));
+        label.setText("");
     } else {
-        lblImgSedimentador.setText("[Img Sedimentador]");
+        label.setIcon(null);
+        label.setText(textoFallback);
     }
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
