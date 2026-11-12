@@ -155,29 +155,54 @@ public class Ventana1Captacion extends javax.swing.JFrame {
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
                                                                                               
     try {
+        // 1. Validación de campo vacío en Caudal Base
+        if (txtCaudal.getText().trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Por favor ingrese un valor en el Caudal Base.",
+                "Campo Vacío",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 2. Validación de Estado Operativo (Ningún RadioButton seleccionado)
+        if (!rbNormal.isSelected() && !rbLluvia.isSelected() && !rbFalla.isSelected()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Debe seleccionar un Estado Operativo (Normal, Sobrecarga por Lluvia o Falla Operativa) para continuar.",
+                "Validación de Estado Operativo",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 3. Procesamiento de datos si las validaciones pasan
         double qBase = Double.parseDouble(txtCaudal.getText().trim());
         String fuente = cbFuente.getSelectedItem().toString();
 
-        String estado = "Normal";
-        if (rbLluvia.isSelected()) estado = "Sobrecarga por Lluvia";
-        if (rbFalla.isSelected()) estado = "Falla Operativa";
+        String estado = "";
+        if (rbNormal.isSelected()) {
+            estado = "Normal";
+        } else if (rbLluvia.isSelected()) {
+            estado = "Sobrecarga por Lluvia";
+        } else if (rbFalla.isSelected()) {
+            estado = "Falla Operativa";
+        }
 
+        // 4. Creación del objeto Muestra y apertura de Ventana 2
         com.aquagestion.model.MuestraAgua muestra = 
             new com.aquagestion.model.MuestraAgua(qBase, fuente, estado);
 
-        // Abre la Ventana 2 directamente
         com.aquagestion.view.Ventana2Tratamiento v2 = 
             new com.aquagestion.view.Ventana2Tratamiento(muestra.getCaudalReal(), muestra.getSstInicial());
-        
+
         v2.setLocationRelativeTo(null);
         v2.setVisible(true);
         this.dispose();
 
     } catch (NumberFormatException ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Por favor ingrese un número válido en el Caudal Base antes de continuar.", 
-            "Error de Validación", 
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Por favor ingrese un número válido en el Caudal Base antes de continuar.",
+            "Error de Validación",
             javax.swing.JOptionPane.WARNING_MESSAGE);
+    
     }
 
     // TODO add your handling code here:
@@ -250,7 +275,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new Ventana1Captacion().setVisible(true));
     }
     
-      private void actualizarImagenFuente() {
+    private void actualizarImagenFuente() {
     if (cbFuente.getSelectedItem() == null) return;
     
     String seleccion = cbFuente.getSelectedItem().toString().trim();

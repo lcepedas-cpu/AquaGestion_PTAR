@@ -40,6 +40,8 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         btnVolver = new javax.swing.JButton();
         pnlAlerta = new javax.swing.JPanel();
         lblAlertaTexto = new javax.swing.JLabel();
+        lblImgRejillas = new javax.swing.JLabel();
+        lblImgSedimentador = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -103,31 +105,36 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(93, 93, 93)
+                .addComponent(lblImgRejillas, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblImgSedimentador, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(91, 91, 91))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(rbRejillas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbSedimentador)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnVolver)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSiguiente))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblQreal)
-                                    .addComponent(lblSstInicial)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblSstSalida)
-                                            .addComponent(lblLodosRetenidos))))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnVolver)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSiguiente))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(rbRejillas)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rbSedimentador)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblSstInicial)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblSstSalida)
+                                    .addComponent(lblLodosRetenidos)))
+                            .addComponent(lblQreal))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -136,22 +143,25 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                 .addComponent(lblQreal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblSstInicial)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblImgSedimentador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblImgRejillas, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rbRejillas)
                     .addComponent(rbSedimentador))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
+                        .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(34, 34, 34)
                                 .addComponent(lblLodosRetenidos))
                             .addComponent(lblSstSalida))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVolver)
                     .addComponent(btnSiguiente))
@@ -185,6 +195,10 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         this.caudalReal = caudalReal;
         this.sstInicial = sstInicial;
         initComponents();
+        
+        this.setSize(620, 480);
+        this.setLocationRelativeTo(null);
+        cargarImagenesFijas();
         
         lblQreal.setText(String.format("Caudal Real (Qreal): %.1f L/s", caudalReal));
         lblSstInicial.setText(String.format("SST Inicial: %.1f mg/L", sstInicial));
@@ -249,13 +263,37 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new Ventana2Tratamiento().setVisible(true));
     }
+private void cargarImagenesFijas() {
+    // Cargar imagen de Rejillas
+    java.net.URL urlRejillas = getClass().getResource("/images/rejillas.png");
+    if (urlRejillas != null) {
+        javax.swing.ImageIcon icon = new javax.swing.ImageIcon(urlRejillas);
+        java.awt.Image img = icon.getImage().getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH);
+        lblImgRejillas.setIcon(new javax.swing.ImageIcon(img));
+        lblImgRejillas.setText("");
+    } else {
+        lblImgRejillas.setText("[Img Rejillas]");
+    }
 
+    // Cargar imagen de Sedimentador
+    java.net.URL urlSedimentador = getClass().getResource("/images/sedimentador.png");
+    if (urlSedimentador != null) {
+        javax.swing.ImageIcon icon = new javax.swing.ImageIcon(urlSedimentador);
+        java.awt.Image img = icon.getImage().getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH);
+        lblImgSedimentador.setIcon(new javax.swing.ImageIcon(img));
+        lblImgSedimentador.setText("");
+    } else {
+        lblImgSedimentador.setText("[Img Sedimentador]");
+    }
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgFiltrado;
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JButton btnVolver;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblAlertaTexto;
+    private javax.swing.JLabel lblImgRejillas;
+    private javax.swing.JLabel lblImgSedimentador;
     private javax.swing.JLabel lblLodosRetenidos;
     private javax.swing.JLabel lblQreal;
     private javax.swing.JLabel lblSstInicial;
