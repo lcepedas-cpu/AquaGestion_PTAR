@@ -24,6 +24,9 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         this.dqoEntrada = dqoEntrada;
         
         initComponents();
+        this.getRootPane().setDefaultButton(btnSiguiente);
+        this.setSize(650, 440);
+        this.setLocationRelativeTo(null);
         
         lblQreal.setText(String.format("Caudal Real (Qreal): %.1f L/s", caudalReal));
         lblSstEntrada.setText(String.format("SST Remanentes (salida V2): %.1f mg/L", sstEntrada));
@@ -49,9 +52,10 @@ public class Ventana3Reactor extends javax.swing.JFrame {
             // Activar/desactivar la Alerta de Anoxia
             if (reactor.tieneRiesgoAnoxia()) {
                 pnlAlerta.setVisible(true);
-                lblAlertaTexto.setText("<html><center><b>🚨 ALERTA OPERATIVA</b><br><br>"
-                        + "\"Riesgo de anoxia / muerte bacteriana (OD &lt; 1.0 mg/L). "
-                        + "Sopladores encendidos al 100% de emergencia.\"</center></html>");
+                lblAlertaTexto.setText("<html><body style='width: 210px; text-align: center; font-family: sans-serif; font-size: 10px;'>"
+        + "<b style='color: #D32F2F;'>&#9888; ALERTA OPERATIVA</b><br><br>"
+        + "\"Riesgo de anoxia / muerte bacteriana (OD &lt; 1.0 mg/L). Sopladores encendidos al 100% de emergencia.\""
+        + "</body></html>");
             } else {
                 pnlAlerta.setVisible(false);
             }
@@ -93,6 +97,10 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         lblConsumoEnergia = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
         btnSiguiente = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -104,7 +112,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
 
         lblDqoEntrada.setText("DQO Inicial: [ ___ ] mg/L");
 
-        txtOxigeno.setText("2.0");
+        txtOxigeno.setText("0");
         txtOxigeno.addActionListener(this::txtOxigenoActionPerformed);
 
         rbControlAuto.setText("Control Automático por Umbrales");
@@ -115,6 +123,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
 
         pnlAlerta.setBackground(new java.awt.Color(255, 235, 235));
         pnlAlerta.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0), 2));
+        pnlAlerta.setMinimumSize(new java.awt.Dimension(260, 110));
 
         lblAlertaTexto.setText("🚨 ¡ALERTA OPERATIVA!");
 
@@ -123,16 +132,16 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         pnlAlertaLayout.setHorizontalGroup(
             pnlAlertaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlAlertaLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(19, 19, 19)
                 .addComponent(lblAlertaTexto)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         pnlAlertaLayout.setVerticalGroup(
             pnlAlertaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlAlertaLayout.createSequentialGroup()
-                .addGap(42, 42, 42)
+                .addGap(43, 43, 43)
                 .addComponent(lblAlertaTexto)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         lblDboSalida.setText("DBO5 Salida: [ ___ ] mg/L");
@@ -149,6 +158,18 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         btnSiguiente.setText("Pasar a Clarificación →");
         btnSiguiente.addActionListener(this::btnSiguienteActionPerformed);
 
+        jLabel1.setText("Oxígeno disuelto (OD): [ ___ ] mg/L");
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI Black", 2, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 102, 102));
+        jLabel5.setText("AquaGestion_PTAR");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
+        jLabel2.setText("RESUTADOS BIOLOGICOS");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
+        jLabel3.setText("CONTROL DE AIREACIÓN");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -157,54 +178,66 @@ public class Ventana3Reactor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(pnlAlerta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblSstEntrada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblQreal, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblDboEntrada, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblDqoEntrada, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(lblDqoEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblDboEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblQreal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblSstEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtOxigeno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(rbControlAuto)
-                                    .addComponent(rbControlManual))
-                                .addGap(22, 22, 22))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblDqoSalida)
-                                    .addComponent(lblDboSalida)
-                                    .addComponent(lblMasaRemovida)
-                                    .addComponent(lblConsumoEnergia))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(lblDqoSalida)
+                            .addComponent(lblDboSalida)
+                            .addComponent(lblMasaRemovida)
+                            .addComponent(lblConsumoEnergia)
+                            .addComponent(txtOxigeno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rbControlAuto)
+                            .addComponent(rbControlManual)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(33, 33, 33))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnVolver)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSiguiente)
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblQreal)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblSstEntrada)
-                    .addComponent(txtOxigeno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblDboEntrada)
-                    .addComponent(rbControlAuto))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblDqoEntrada)
-                    .addComponent(rbControlManual))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtOxigeno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbControlAuto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbControlManual))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblQreal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblSstEntrada)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblDboEntrada)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblDqoEntrada)))
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblDboSalida)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblDqoSalida)
@@ -212,10 +245,8 @@ public class Ventana3Reactor extends javax.swing.JFrame {
                         .addComponent(lblMasaRemovida)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblConsumoEnergia))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                    .addComponent(pnlAlerta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVolver)
                     .addComponent(btnSiguiente))
@@ -290,6 +321,10 @@ try {
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JButton btnVolver;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel lblAlertaTexto;
     private javax.swing.JLabel lblConsumoEnergia;
     private javax.swing.JLabel lblDboEntrada;
