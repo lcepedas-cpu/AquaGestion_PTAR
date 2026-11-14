@@ -15,6 +15,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
     private double sstEntrada = 77.0;
     private double dboEntrada = 130.0;
     private double dqoEntrada = 260.0;
+    private double lodosPrimarios = 120.0;
 
     // Constructor que recibe datos reales desde V2
     public Ventana3Reactor(double caudalReal, double sstEntrada, double dboEntrada, double dqoEntrada) {
@@ -22,54 +23,97 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         this.sstEntrada = sstEntrada;
         this.dboEntrada = dboEntrada;
         this.dqoEntrada = dqoEntrada;
-        
+
         initComponents();
+        buttonGroup1.add(rbControlAuto);
+        buttonGroup1.add(rbControlManual);
+
+        this.setTitle("AquaGestion_PTAR - Etapa 3: Reactor Biológico");
         this.getRootPane().setDefaultButton(btnSiguiente);
         this.setSize(650, 440);
         this.setLocationRelativeTo(null);
-        
-        lblQreal.setText(String.format("Caudal Real (Qreal): %.1f L/s", caudalReal));
-        lblSstEntrada.setText(String.format("SST Remanentes (salida V2): %.1f mg/L", sstEntrada));
-        lblDboEntrada.setText(String.format("DBO5 Inicial: %.1f mg/L", dboEntrada));
-        lblDqoEntrada.setText(String.format("DQO Inicial: %.1f mg/L", dqoEntrada));
-        
-        actualizarSimulacion();
+
+        cargarGifAireacion();
+
+        lblQreal.setText(String.format("Caudal Real: %.2f L/s", caudalReal));
+        lblSstEntrada.setText(String.format("SST Remanentes: %.2f mg/L", sstEntrada));
+        lblDboEntrada.setText(String.format("DBO5 Inicial: %.2f mg/L", dboEntrada));
+        lblDqoEntrada.setText(String.format("DQO Inicial: %.2f mg/L", dqoEntrada));
+
+        lblDboSalida.setText("DBO5 Salida: -- mg/L");
+        lblDqoSalida.setText("DQO Salida: -- mg/L");
+        lblMasaRemovida.setText("Masa DBO Removida: -- kg/día");
+        lblConsumoEnergia.setText("Consumo Energético: -- kWh/día");
+    }
+
+    private void cargarGifAireacion() {
+        java.net.URL url = getClass().getResource("/proyecto/imagenes/aireacion.gif");
+        if (url != null) {
+            lblAireacion.setIcon(new javax.swing.ImageIcon(url));
+            lblAireacion.setText("");
+        }
     }
 
     private void actualizarSimulacion() {
+        String textoOd = txtOxigeno.getText().trim();
+        if (textoOd.isEmpty()) {
+            return;
+        }
+
         try {
-            double od = Double.parseDouble(txtOxigeno.getText().trim());
+            double od = Double.parseDouble(textoOd);
+            if (od < 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "El Oxígeno Disuelto (OD) no puede ser un valor negativo.",
+                        "Dato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (!rbControlAuto.isSelected() && !rbControlManual.isSelected()) {
+                return;
+            }
+
             boolean esAuto = rbControlAuto.isSelected();
 
-            procesos.ReactorBiologico reactor = 
-                new procesos.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
+            // Arreglo de umbrales [0]=Anoxia, [1]=Mínimo Óptimo, [2]=Máximo Óptimo, [3]=Sobre-oxigenación
+            double[] umbralesOD = {1.0, 1.5, 3.0, 4.0};
 
-            lblDboSalida.setText(String.format("DBO5 Salida: %.1f mg/L", reactor.getDboSalida()));
-            lblDqoSalida.setText(String.format("DQO Salida: %.1f mg/L", reactor.getDqoSalida()));
-            lblMasaRemovida.setText(String.format("Masa DBO Removida: %.1f kg/día", reactor.getMasaDboRemovidaKgDia()));
-            lblConsumoEnergia.setText(String.format("Consumo Energético: %.1f kWh/día", reactor.getConsumoEnergiaKwhDia()));
+            procesos.ReactorBiologico reactor =
+                    new procesos.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
 
-            // Activar/desactivar la Alerta de Anoxia
-            if (reactor.tieneRiesgoAnoxia()) {
-                pnlAlerta.setVisible(true);
-                lblAlertaTexto.setText("<html><body style='width: 210px; text-align: center; font-family: sans-serif; font-size: 10px;'>"
-        + "<b style='color: #D32F2F;'>&#9888; ALERTA OPERATIVA</b><br><br>"
-        + "\"Riesgo de anoxia / muerte bacteriana (OD &lt; 1.0 mg/L). Sopladores encendidos al 100% de emergencia.\""
-        + "</body></html>");
-            } else {
-                pnlAlerta.setVisible(false);
+            lblDboSalida.setText(String.format("DBO5 Salida: %.2f mg/L", reactor.getDboSalida()));
+            lblDqoSalida.setText(String.format("DQO Salida: %.2f mg/L", reactor.getDqoSalida()));
+            lblMasaRemovida.setText(String.format("Masa DBO Removida: %.2f kg/día", reactor.getMasaDboRemovidaKgDia()));
+            lblConsumoEnergia.setText(String.format("Consumo Energético: %.2f kWh/día", reactor.getConsumoEnergiaKwhDia()));
+
+            // Alertas operativas (Anoxia < 1.0 mg/L y Desperdicio Energético > 4.0 mg/L)
+            if (od < umbralesOD[0] || reactor.tieneRiesgoAnoxia()) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "🚨 ALERTA CRÍTICA DE ANOXIA (OD < 1.0 mg/L)\n\n"
+                        + "Riesgo de muerte bacteriana por falta de oxígeno.\n"
+                        + "Los sopladores se han encendido al 100% de emergencia.",
+                        "Alerta Operativa - Reactor Biológico",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+            } else if (od > umbralesOD[3]) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "⚠️ ALERTA DE EFICIENCIA (OD > 4.0 mg/L)\n\n"
+                        + "Reactor sobre-oxigenado. Inyección de aire suspendida para evitar desperdicio de energía eléctrica.",
+                        "Alerta de Desperdicio Energético",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
             }
+
         } catch (NumberFormatException e) {
-            // Manejo silencioso si la caja está vacía temporalmente
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Ingrese un valor numérico válido para el Oxígeno Disuelto (use punto para decimales).",
+                    "Formato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
+            txtOxigeno.requestFocus();
         }
     }
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana3Reactor.class.getName());
 
-    /**
-     * Creates new form Ventana3Reactor
-     */
     public Ventana3Reactor() {
-        initComponents();
+        this(10.0, 77.0, 130.0, 260.0);
     }
 
     /**
@@ -82,37 +126,31 @@ public class Ventana3Reactor extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        lblQreal = new javax.swing.JLabel();
-        lblSstEntrada = new javax.swing.JLabel();
-        lblDboEntrada = new javax.swing.JLabel();
-        lblDqoEntrada = new javax.swing.JLabel();
         txtOxigeno = new javax.swing.JTextField();
         rbControlAuto = new javax.swing.JRadioButton();
         rbControlManual = new javax.swing.JRadioButton();
-        pnlAlerta = new javax.swing.JPanel();
-        lblAlertaTexto = new javax.swing.JLabel();
-        lblDboSalida = new javax.swing.JLabel();
-        lblDqoSalida = new javax.swing.JLabel();
-        lblMasaRemovida = new javax.swing.JLabel();
-        lblConsumoEnergia = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
         btnSiguiente = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        lblQreal = new javax.swing.JLabel();
+        lblDboEntrada = new javax.swing.JLabel();
+        lblDqoEntrada = new javax.swing.JLabel();
+        lblSstEntrada = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        lblDboSalida = new javax.swing.JLabel();
+        lblDqoSalida = new javax.swing.JLabel();
+        lblMasaRemovida = new javax.swing.JLabel();
+        lblConsumoEnergia = new javax.swing.JLabel();
+        lblResultados = new javax.swing.JLabel();
+        lblAireacion = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        lblQreal.setText("Caudal Real (Qreal): [ ___ ] L/s");
-
-        lblSstEntrada.setText("SST Remanentes (salida V2): [ ___ ] mg/L");
-
-        lblDboEntrada.setText("DBO5 Inicial: [ ___ ] mg/L");
-
-        lblDqoEntrada.setText("DQO Inicial: [ ___ ] mg/L");
-
-        txtOxigeno.setText("0");
         txtOxigeno.addActionListener(this::txtOxigenoActionPerformed);
 
         rbControlAuto.setText("Control Automático por Umbrales");
@@ -121,54 +159,108 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         rbControlManual.setText("Control Manual de Sopladores");
         rbControlManual.addActionListener(this::rbControlManualActionPerformed);
 
-        pnlAlerta.setBackground(new java.awt.Color(255, 235, 235));
-        pnlAlerta.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0), 2));
-        pnlAlerta.setMinimumSize(new java.awt.Dimension(260, 110));
-
-        lblAlertaTexto.setText("🚨 ¡ALERTA OPERATIVA!");
-
-        javax.swing.GroupLayout pnlAlertaLayout = new javax.swing.GroupLayout(pnlAlerta);
-        pnlAlerta.setLayout(pnlAlertaLayout);
-        pnlAlertaLayout.setHorizontalGroup(
-            pnlAlertaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlAlertaLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(lblAlertaTexto)
-                .addContainerGap(109, Short.MAX_VALUE))
-        );
-        pnlAlertaLayout.setVerticalGroup(
-            pnlAlertaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlAlertaLayout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(lblAlertaTexto)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        lblDboSalida.setText("DBO5 Salida: [ ___ ] mg/L");
-
-        lblDqoSalida.setText("DQO Salida: [ ___ ] mg/L");
-
-        lblMasaRemovida.setText("Masa DBO Removida: [ ___ ] kg/día");
-
-        lblConsumoEnergia.setText("Consumo Energético: [ ___ ] kWh/día");
-
         btnVolver.setText("← Volver a V2");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
 
         btnSiguiente.setText("Pasar a Clarificación →");
         btnSiguiente.addActionListener(this::btnSiguienteActionPerformed);
 
-        jLabel1.setText("Oxígeno disuelto (OD): [ ___ ] mg/L");
+        jLabel1.setText("mg/L");
 
         jLabel5.setFont(new java.awt.Font("Segoe UI Black", 2, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 102, 102));
         jLabel5.setText("AquaGestion_PTAR");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
-        jLabel2.setText("RESUTADOS BIOLOGICOS");
-
         jLabel3.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
         jLabel3.setText("CONTROL DE AIREACIÓN");
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos desde Entrada"));
+
+        lblQreal.setText("Caudal Real :  L/s");
+
+        lblDboEntrada.setText("DBO5 Inicial: mg/L");
+
+        lblDqoEntrada.setText("DQO Inicial: mg/L");
+
+        lblSstEntrada.setText("SST Remanentes : mg/L");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lblDboEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                    .addComponent(lblQreal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSstEntrada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblDqoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(8, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblQreal)
+                    .addComponent(lblSstEntrada))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDboEntrada)
+                    .addComponent(lblDqoEntrada)))
+        );
+
+        jLabel4.setText("Ingrese la cantidad de Oxigeno Disuelto");
+
+        lblDboSalida.setText("DBO5 Salida:  mg/L");
+
+        lblDqoSalida.setText("DQO Salida: mg/L");
+
+        lblMasaRemovida.setText("Masa DBO Removida: kg/día");
+
+        lblConsumoEnergia.setText("Consumo Energético: kWh/día");
+
+        lblResultados.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
+        lblResultados.setText("RESUTADOS BIOLOGICOS");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDboSalida)
+                    .addComponent(lblDqoSalida)
+                    .addComponent(lblMasaRemovida)
+                    .addComponent(lblConsumoEnergia)
+                    .addComponent(lblResultados))
+                .addContainerGap(50, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(lblResultados)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDboSalida)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblDqoSalida)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMasaRemovida)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblConsumoEnergia))
+        );
+
+        lblAireacion.setMaximumSize(new java.awt.Dimension(180, 95));
+        lblAireacion.setMinimumSize(new java.awt.Dimension(180, 95));
+        lblAireacion.setPreferredSize(new java.awt.Dimension(180, 95));
+
+        jLabel2.setText("Etapa 3: Tratamiento Secundario");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -178,79 +270,74 @@ public class Ventana3Reactor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(pnlAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(lblDqoEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblDboEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblQreal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblSstEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblDqoSalida)
-                            .addComponent(lblDboSalida)
-                            .addComponent(lblMasaRemovida)
-                            .addComponent(lblConsumoEnergia)
-                            .addComponent(txtOxigeno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rbControlAuto)
-                            .addComponent(rbControlManual)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addGap(33, 33, 33))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtOxigeno, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel1))
+                                    .addComponent(rbControlAuto)
+                                    .addComponent(rbControlManual)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(btnVolver)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnSiguiente)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblAireacion, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(54, 54, 54))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnVolver)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSiguiente)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel5)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel5)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel2))
+                .addGap(12, 12, 12)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtOxigeno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbControlAuto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbControlManual))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblQreal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblSstEntrada)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDboEntrada)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDqoEntrada)))
-                .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblDboSalida)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDqoSalida)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblMasaRemovida)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblConsumoEnergia))
-                    .addComponent(pnlAlerta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtOxigeno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(lblAireacion, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnVolver)
-                    .addComponent(btnSiguiente))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(rbControlAuto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rbControlManual)
+                        .addGap(239, 239, 239))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnSiguiente)
+                            .addComponent(btnVolver))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -274,22 +361,49 @@ this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-try {
-        double od = Double.parseDouble(txtOxigeno.getText().trim());
-        boolean esAuto = rbControlAuto.isSelected();
+    // TODO add your handling code here:
+                                                 
+        String textoOd = txtOxigeno.getText().trim();
+        if (textoOd.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Por favor, ingrese la cantidad de Oxígeno Disuelto (OD).",
+                    "Campo vacío", javax.swing.JOptionPane.WARNING_MESSAGE);
+            txtOxigeno.requestFocus();
+            return;
+        }
 
-        procesos.ReactorBiologico reactor = 
-            new procesos.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
+        if (!rbControlAuto.isSelected() && !rbControlManual.isSelected()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Por favor, seleccione un Modo de Control de Aireación antes de continuar.",
+                    "Selección requerida", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        double dboSalidaV3 = reactor.getDboSalida();
-        double lodosPrimarios = 120.0; // Valor heredado de la purga en V2
+        try {
+            double od = Double.parseDouble(textoOd);
+            if (od < 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "El Oxígeno Disuelto (OD) no puede ser negativo.",
+                        "Dato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-        Ventana4Clarificacion v4 = new Ventana4Clarificacion(caudalReal, sstEntrada, dboSalidaV3, lodosPrimarios);
-        v4.setVisible(true);
-        this.dispose();
-    } catch (Exception e) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Verifique los datos de aireación.");
-    }        // TODO add your handling code here:
+            boolean esAuto = rbControlAuto.isSelected();
+            procesos.ReactorBiologico reactor =
+                    new procesos.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
+
+            double dboSalidaV3 = reactor.getDboSalida();
+
+            Ventana4Clarificacion v4 = new Ventana4Clarificacion(caudalReal, sstEntrada, dboSalidaV3, lodosPrimarios);
+            v4.setVisible(true);
+            this.dispose();
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Ingrese un valor numérico válido para el Oxígeno Disuelto (ej: 2.5).",
+                    "Formato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
+            txtOxigeno.requestFocus();
+        }
+    
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     /**
@@ -324,8 +438,11 @@ try {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel lblAlertaTexto;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lblAireacion;
     private javax.swing.JLabel lblConsumoEnergia;
     private javax.swing.JLabel lblDboEntrada;
     private javax.swing.JLabel lblDboSalida;
@@ -333,8 +450,8 @@ try {
     private javax.swing.JLabel lblDqoSalida;
     private javax.swing.JLabel lblMasaRemovida;
     private javax.swing.JLabel lblQreal;
+    private javax.swing.JLabel lblResultados;
     private javax.swing.JLabel lblSstEntrada;
-    private javax.swing.JPanel pnlAlerta;
     private javax.swing.JRadioButton rbControlAuto;
     private javax.swing.JRadioButton rbControlManual;
     private javax.swing.JTextField txtOxigeno;

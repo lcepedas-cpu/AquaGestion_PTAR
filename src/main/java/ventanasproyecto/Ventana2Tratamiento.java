@@ -36,17 +36,14 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         this.setSize(630, 490);
         this.setLocationRelativeTo(null);
 
-        if (!rbRejillas.isSelected() && !rbSedimentador.isSelected()) {
-            rbRejillas.setSelected(true);
-        }
-
         cargarImagenesFijas();
 
-        lblSstInicial.setText(String.format("SST Inicial: %.1f mg/L", this.sstInicial));
-        lblQreal.setText(String.format("Caudal Real: %.1f L/s", this.caudalReal));
+        lblSstInicial.setText(String.format("SST Inicial: %.2f mg/L", this.sstInicial));
+        lblQreal.setText(String.format("Caudal Real: %.2f L/s", this.caudalReal));
         lblEstadoplanta.setText("Estado: " + this.estadoPlanta);
 
-        actualizarSimulacion(true);
+        lblSstSalida.setText("SST Remanentes (SST salida): -- mg/L");
+        lblLodosRetenidos.setText("Lodos Retenidos: -- kg/día");
     }
 
     /**
@@ -75,6 +72,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         lblSstSalida = new javax.swing.JLabel();
         lblLodosRetenidos = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -127,8 +125,8 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblSstInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(91, 91, 91)
+                .addComponent(lblSstInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(58, 58, 58)
                 .addComponent(lblQreal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
                 .addComponent(lblEstadoplanta, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -169,8 +167,10 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                 .addComponent(lblSstSalida)
                 .addGap(18, 18, 18)
                 .addComponent(lblLodosRetenidos)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jLabel2.setText("Seleccione el método de filtración");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -190,9 +190,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(lblImgRejillas, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(145, 145, 145))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(rbRejillas)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                                .addComponent(rbRejillas, javax.swing.GroupLayout.Alignment.TRAILING))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(btnVolver)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -202,17 +200,21 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                                 .addComponent(rbSedimentador)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnSiguiente)
-                                .addGap(44, 44, 44))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
                                 .addComponent(lblImgSedimentador, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(164, 164, 164))))))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSiguiente)
+                .addGap(35, 35, 35))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,29 +225,32 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblImgRejillas, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(rbRejillas)
-                            .addComponent(rbSedimentador))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnVolver)
-                            .addComponent(btnSiguiente)))
+                            .addComponent(rbSedimentador)))
                     .addComponent(lblImgSedimentador, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSiguiente)
+                    .addComponent(btnVolver))
+                .addGap(61, 61, 61))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private procesos.FiltroPrimario calcularFiltroActual(boolean permitirPopup) {
-        double ef = rbSedimentador.isSelected() ? 0.85 : 0.70;
+      double[] eficiencias = {0.70, 0.85, 0.50}; // [0]=Rejillas, [1]=Sedimentador, [2]=Rejillas con contingencia
+        double ef = rbSedimentador.isSelected() ? eficiencias[1] : eficiencias[0];
         procesos.FiltroPrimario filtro = new procesos.FiltroPrimario(caudalReal, sstInicial, ef);
 
         String estadoLower = estadoPlanta.toLowerCase();
@@ -258,7 +263,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         if (rbRejillas.isSelected() && hayContingencia) {
             if (permitirPopup && !alertaMostrada) {
                 alertaMostrada = true;
-                String mensaje = "⚠️ ¡ALERTA OPERATIVA - CAPACIDAD INSUFICIENTE!\n\n"
+                String mensaje = "¡ALERTA OPERATIVA - CAPACIDAD INSUFICIENTE!\n\n"
                         + "\"Las Rejillas Básicas (70%) no son suficientes para procesar el nivel actual de sólidos/caudal.\n"
                         + "Existe riesgo de colapso por desbordamiento de sólidos hacia el reactor biológico.\"\n\n"
                         + "¿Desea cambiar automáticamente al Sedimentador Avanzado (85% remoción)?";
@@ -277,12 +282,12 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
 
                 if (opcion == 0) {
                     rbSedimentador.setSelected(true);
-                    ef = 0.85;
+                    ef = eficiencias[1];
                 } else {
-                    ef = 0.50;
+                    ef = eficiencias[2];
                 }
             } else {
-                ef = 0.50;
+                ef = eficiencias[2];
             }
             filtro = new procesos.FiltroPrimario(caudalReal, sstInicial, ef);
         }
@@ -292,8 +297,8 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
 
     private void actualizarSimulacion(boolean mostrarPopup) {
         procesos.FiltroPrimario filtro = calcularFiltroActual(mostrarPopup);
-        lblSstSalida.setText(String.format("SST Remanentes (SST salida): %.1f mg/L", filtro.getSstSalida()));
-        lblLodosRetenidos.setText(String.format("Lodos Retenidos: %.1f kg/día", filtro.getLodosRetenidosKgDia()));
+        lblSstSalida.setText(String.format("SST Remanentes (SST salida): %.2f mg/L", filtro.getSstSalida()));
+        lblLodosRetenidos.setText(String.format("Lodos Retenidos: %.2f kg/día", filtro.getLodosRetenidosKgDia()));
     }
 
     private void cargarImagenesFijas() {
@@ -321,6 +326,16 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
     }
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+       if (!rbRejillas.isSelected() && !rbSedimentador.isSelected()) {
+            javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "Por favor, seleccione un tipo de tratamiento primario antes de continuar.",
+                "Selección requerida",
+                javax.swing.JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         procesos.FiltroPrimario filtro = calcularFiltroActual(false);
         double sstSalidaV2 = filtro.getSstSalida();
         double dboEntradaV3 = 130.0;
@@ -328,7 +343,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
 
         Ventana3Reactor v3 = new Ventana3Reactor(caudalReal, sstSalidaV2, dboEntradaV3, dqoEntradaV3);
         v3.setVisible(true);
-        this.dispose();
+        this.dispose(); 
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void rbRejillasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRejillasActionPerformed
@@ -375,6 +390,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
