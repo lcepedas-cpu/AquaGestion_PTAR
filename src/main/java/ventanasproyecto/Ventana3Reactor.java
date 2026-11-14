@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.aquagestion.view;
+package ventanasproyecto;
 
 /**
  *
@@ -41,8 +41,8 @@ public class Ventana3Reactor extends javax.swing.JFrame {
             double od = Double.parseDouble(txtOxigeno.getText().trim());
             boolean esAuto = rbControlAuto.isSelected();
 
-            com.aquagestion.model.ReactorBiologico reactor = 
-                new com.aquagestion.model.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
+            procesos.ReactorBiologico reactor = 
+                new procesos.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
 
             lblDboSalida.setText(String.format("DBO5 Salida: %.1f mg/L", reactor.getDboSalida()));
             lblDqoSalida.setText(String.format("DQO Salida: %.1f mg/L", reactor.getDqoSalida()));
@@ -278,8 +278,8 @@ try {
         double od = Double.parseDouble(txtOxigeno.getText().trim());
         boolean esAuto = rbControlAuto.isSelected();
 
-        com.aquagestion.model.ReactorBiologico reactor = 
-            new com.aquagestion.model.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
+        procesos.ReactorBiologico reactor = 
+            new procesos.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
 
         double dboSalidaV3 = reactor.getDboSalida();
         double lodosPrimarios = 120.0; // Valor heredado de la purga en V2

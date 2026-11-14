@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.aquagestion.view;
+package ventanasproyecto;
 
 /**
  *
@@ -42,8 +42,8 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
     private void actualizarSimulacion() {
         boolean esCloracion = rbCloracion.isSelected();
 
-        com.aquagestion.model.TratamientoFinal finalT = 
-            new com.aquagestion.model.TratamientoFinal(caudalReal, sstSalidaV2, dboSalidaV3, lodosPrimarios, esCloracion);
+        procesos.TratamientoFinal finalT = 
+            new procesos.TratamientoFinal(caudalReal, sstSalidaV2, dboSalidaV3, lodosPrimarios, esCloracion);
 
         lblSstFinal.setText(String.format("SST Final (Clarificado): %.1f mg/L", finalT.getSstFinal()));
         lblLodosBiologicos.setText(String.format("Lodos Biológicos: %.1f kg/día", finalT.getLodosBiologicosKgDia()));
@@ -258,8 +258,8 @@ javax.swing.JOptionPane.showMessageDialog(this, "Avanzando a la Evaluación Fina
                                              
     boolean esCloracion = rbCloracion.isSelected();
 
-    com.aquagestion.model.TratamientoFinal finalT = 
-        new com.aquagestion.model.TratamientoFinal(caudalReal, sstSalidaV2, dboSalidaV3, lodosPrimarios, esCloracion);
+    procesos.TratamientoFinal finalT = 
+        new procesos.TratamientoFinal(caudalReal, sstSalidaV2, dboSalidaV3, lodosPrimarios, esCloracion);
 
     double sstFinal = finalT.getSstFinal();
     double dboFinal = dboSalidaV3 * 0.60;

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.aquagestion.view;
+package ventanasproyecto;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -21,7 +21,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private double consumoTotal = 40.0;
     private double lodosTotales = 135.0;
 
-    private com.aquagestion.model.EvaluacionEfluente evaluacion;
+    private procesos.EvaluacionEfluente evaluacion;
 
     public Ventana5Evaluacion() {
         initComponents();
@@ -46,7 +46,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     }
 
     private void cargarDatos() {
-        evaluacion = new com.aquagestion.model.EvaluacionEfluente(
+        evaluacion = new procesos.EvaluacionEfluente(
                 sstEntrada, sstSalida, dboEntrada, dboSalida, dqoEntrada, dqoSalida, consumoTotal, lodosTotales);
 
         // Actualizar Semáforo
@@ -60,9 +60,9 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                 "Vertimiento NO CUMPLE con la Resolución 0631 de 2015.");
 
         // Actualizar Tablero Resumen
-        lblDashSST.setText(String.format("SST   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", sstEntrada, sstSalida, com.aquagestion.model.EvaluacionEfluente.LIMITE_SST));
-        lblDashDBO.setText(String.format("DBO5  │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dboEntrada, dboSalida, com.aquagestion.model.EvaluacionEfluente.LIMITE_DBO));
-        lblDashDQO.setText(String.format("DQO   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, com.aquagestion.model.EvaluacionEfluente.LIMITE_DQO));
+        lblDashSST.setText(String.format("SST   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", sstEntrada, sstSalida, procesos.EvaluacionEfluente.LIMITE_SST));
+        lblDashDBO.setText(String.format("DBO5  │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dboEntrada, dboSalida, procesos.EvaluacionEfluente.LIMITE_DBO));
+        lblDashDQO.setText(String.format("DQO   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, procesos.EvaluacionEfluente.LIMITE_DQO));
 
         // Actualizar Estadísticas Globale
         lblEficDBO.setText(String.format("Eficiencia DBO: %.1f %%", evaluacion.getEficienciaDBO()));
@@ -196,9 +196,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblLodosTotales)
-                                .addGap(20, 20, 20))
+                            .addComponent(lblLodosTotales)
                             .addComponent(lblConsumoTotal)
                             .addComponent(lblEficDBO)
                             .addComponent(lblEficSST))

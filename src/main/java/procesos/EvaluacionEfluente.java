@@ -1,4 +1,4 @@
-package com.aquagestion.model;
+package procesos;
 
 import java.io.FileWriter;
 import java.io.IOException;

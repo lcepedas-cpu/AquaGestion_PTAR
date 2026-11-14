@@ -1,4 +1,4 @@
-package com.aquagestion.model;
+package procesos;
 
 public class TratamientoFinal {
     private double caudalReal;

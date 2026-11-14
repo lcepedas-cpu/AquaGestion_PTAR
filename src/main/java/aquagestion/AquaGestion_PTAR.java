@@ -1,6 +1,6 @@
-package com.aquagestion;
+package aquagestion;
 
-import com.aquagestion.view.Ventana1Captacion;
+import ventanasproyecto.Ventana1Captacion;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
