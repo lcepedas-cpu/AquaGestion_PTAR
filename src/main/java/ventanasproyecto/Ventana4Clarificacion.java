@@ -35,11 +35,11 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         // Item 12: Formato a dos decimales (%.2f)[cite: 13]
         lblQreal.setText(String.format("Qreal: %.1f L/s", caudalReal));
         lblSstV2.setText(String.format("SST Salida V2: %.1f mg/L", sstSalidaV2));
-        lblDboV3.setText(String.format("DBO Salida V3: %.1f mg/L", dboSalidaV3));
-        lblLodosPrimarios.setText(String.format("Lodos Primarios: %.1f kg/día", lodosPrimarios));
+        lblDboV3.setText(String.format("DBO Salida V3: %.2f mg/L", dboSalidaV3));
+        lblLodosPrimarios.setText(String.format("Lodos Primarios: %.2f kg/día", lodosPrimarios));
        
         rbCloracion.setSelected(true);
-        this.getRootPane().setDefaulButton(btnSiguiente);//Item 11: Ejecutar con Enter[cite:13]
+        this.getRootPane().setDefaultButton(btnSiguiente);//Item 11: Ejecutar con Enter[cite:13]
         actualizarSimulacion(true);
     }
 
@@ -50,20 +50,29 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
             new procesos.TratamientoFinal(caudalReal, sstSalidaV2, dboSalidaV3, lodosPrimarios, esCloracion);
         
         //Iten¿m 12: Formato a dos decimales (%.2f)[cite: 13]
-        lblSstFinal.setText(String.format("SST Final (Clarificado): %.1f mg/L", finalT.getSstFinal()));
-        lblLodosBiologicos.setText(String.format("Lodos Biológicos: %.1f kg/día", finalT.getLodosBiologicosKgDia()));
-        lblLodosTotales.setText(String.format("LODOS TOTALES PLANTA: %.1f kg/día", finalT.getLodosTotalesKgDia()));
+        lblSstFinal.setText(String.format("SST Final (Clarificado): %.2f mg/L", finalT.getSstFinal()));
+        lblLodosBiologicos.setText(String.format("Lodos Biológicos: %.2f kg/día", finalT.getLodosBiologicosKgDia()));
+        lblLodosTotales.setText(String.format("LODOS TOTALES PLANTA: %.2f kg/día", finalT.getLodosTotalesKgDia()));
 
+       
         // Control de visibilidad del cuadro de alerta de lodos
-        if (finalT.tieneSaturacionLodos()) {
-            pnlAlerta.setVisible(true);
-            lblAlertaTexto.setText("<html><center><b>🚨 Alerta de Gestión de Lodos</b><br><br>"
-                    + "<font color='red'><b>⚠️ ALERTA DE SATURACIÓN DE LODOS</b></font><br>"
-                    + "<b>Acumulación total supera capacidad de purga. Activar lecho de secado.</b></center></html>");
-        } else {
-            pnlAlerta.setVisible(false);
-        }
-    }
+     if ((finalT.tieneSaturacionLodos() || finalT.getLodosTotalesKgDia() > 500.0) 
+             && permitirAlertaFlotante && !alertaMostrada) {
+         alertaMostrada = true;
+         String mensaje = String.format(
+             "¡ALERTA DE GESTIÓN DE LODOS!\n\n" +
+             "La acumulación total de lodos (%.2f kg/día) supera la capacidad de purga habitual.\n" +
+             "Se requiere activar el lecho de secado o el filtro prensa.",
+             finalT.getLodosTotalesKgDia()
+         );
+         JOptionPane.showMessageDialog(
+             this,
+             mensaje,
+             "Alerta de Saturación de Lodos",
+             JOptionPane.WARNING_MESSAGE
+         );
+     }
+ }
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana4Clarificacion.class.getName());
 
     /**
@@ -124,7 +133,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
         jLabel2.setText("SALIDA Y BALANCE DE LODOS");
 
-        jLabel3.setText("Selecciona el metodo de desinfección");
+        jLabel3.setText("Selecciona el método de desinfección");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos desde entrada"));
 
@@ -171,25 +180,6 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnVolver)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSiguiente)
-                        .addGap(6, 6, 6))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(rbUV)
-                                    .addComponent(rbCloracion))
-                                .addGap(831, 831, 831))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(80, 80, 80)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addGroup(layout.createSequentialGroup()
@@ -199,7 +189,26 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
                                     .addComponent(lblSstFinal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(lblLodosBiologicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(lblLodosTotales, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 953, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnVolver)
+                                .addGap(569, 569, 569)
+                                .addComponent(btnSiguiente))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(80, 80, 80)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(70, 70, 70)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(rbCloracion)
+                                            .addComponent(rbUV))))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,11 +249,21 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void rbCloracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbCloracionActionPerformed
-    actualizarSimulacion();        // TODO add your handling code here:
+    actualizarSimulacion(false);
+    mostrarVentanaImagenProceso(
+            "Detalle del Proceso de Cloración",
+            "/proyecto/imagenes/recirculacion_cloracion (1).jpg",
+            "Diagrama de flujo de recirculación de lodos en el reactor de cloración por hipoclorito."
+        );// TODO add your handling code here:
     }//GEN-LAST:event_rbCloracionActionPerformed
 
     private void rbUVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbUVActionPerformed
-    actualizarSimulacion();        // TODO add your handling code here:
+    actualizarSimulacion(false); 
+    mostrarVentanaImagenProceso(
+            "Detalle del Proceso de Radiación UV",
+            "/proyecto/imagenes/Desinfección por Radiación Ultravioleta.jpg",
+            "Sistema de desinfección mediante lámparas de radiación ultravioleta (99% de eficacia)."
+        );// TODO add your handling code here:
     }//GEN-LAST:event_rbUVActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
@@ -253,25 +272,36 @@ this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-javax.swing.JOptionPane.showMessageDialog(this, "Avanzando a la Evaluación Final del Efluente.");
-                                             
-    boolean esCloracion = rbCloracion.isSelected();
+// Ítem 10: Validación de selección
+        if (!rbCloracion.isSelected() && !rbUV.isSelected()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Debe seleccionar un método de desinfección antes de continuar.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
-    procesos.TratamientoFinal finalT = 
-        new procesos.TratamientoFinal(caudalReal, sstSalidaV2, dboSalidaV3, lodosPrimarios, esCloracion);
+        JOptionPane.showMessageDialog(this, "Avanzando a la Evaluación Final del Efluente.");
 
-    double sstFinal = finalT.getSstFinal();
-    double dboFinal = dboSalidaV3 * 0.60;
-    double dqoFinal = dboFinal * 2.0;
-    double consumoTotal = 15.0 + finalT.getConsumoEnergiaKwh();
-    double lodosTotales = finalT.getLodosTotalesKgDia();
+        boolean esCloracion = rbCloracion.isSelected();
 
-    Ventana5Evaluacion v5 = new Ventana5Evaluacion(
-        220.0, sstFinal, 200.0, dboFinal, 400.0, dqoFinal, consumoTotal, lodosTotales
-    );
-    v5.setLocationRelativeTo(null);
-    v5.setVisible(true);
-    this.dispose();
+        procesos.TratamientoFinal finalT = 
+            new procesos.TratamientoFinal(caudalReal, sstSalidaV2, dboSalidaV3, lodosPrimarios, esCloracion);
+
+        double sstFinal = finalT.getSstFinal();
+        double dboFinal = dboSalidaV3 * 0.60;
+        double dqoFinal = dboFinal * 2.0;
+        double consumoTotal = 15.0 + finalT.getConsumoEnergiaKwh();
+        double lodosTotales = finalT.getLodosTotalesKgDia();
+
+        Ventana5Evaluacion v5 = new Ventana5Evaluacion(
+            220.0, sstFinal, 200.0, dboFinal, 400.0, dqoFinal, consumoTotal, lodosTotales
+        );
+        v5.setLocationRelativeTo(null);
+        v5.setVisible(true);
+        this.dispose();
 // TODO add your handling code here:
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
@@ -299,7 +329,47 @@ javax.swing.JOptionPane.showMessageDialog(this, "Avanzando a la Evaluación Fina
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new Ventana4Clarificacion().setVisible(true));
     }
+private void mostrarVentanaImagenProceso(String tituloVentana, String rutaImagen, String descripcion) {
+        javax.swing.JDialog dialogo = new javax.swing.JDialog(this, tituloVentana, true);
+        dialogo.setSize(450, 400);
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setLayout(new java.awt.BorderLayout(10, 10));
 
+        // Panel central con la imagen escalada
+        javax.swing.JLabel lblImagen = new javax.swing.JLabel();
+        lblImagen.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImagen.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 0, 10));
+
+        java.net.URL imgURL = getClass().getResource(rutaImagen);
+        if (imgURL != null) {
+            javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgURL);
+            java.awt.Image imgEscalada = icon.getImage().getScaledInstance(380, 250, java.awt.Image.SCALE_SMOOTH);
+            lblImagen.setIcon(new javax.swing.ImageIcon(imgEscalada));
+        } else {
+            lblImagen.setText("No se encontró la imagen: " + rutaImagen);
+        }
+
+        // Panel inferior con descripción y botón Cerrar
+        javax.swing.JPanel pnlInferior = new javax.swing.JPanel(new java.awt.BorderLayout(10, 10));
+        pnlInferior.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 15, 15, 15));
+
+        javax.swing.JLabel lblDesc = new javax.swing.JLabel("<html>" + descripcion + "</html>");
+        lblDesc.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 13));
+
+        javax.swing.JButton btnCerrar = new javax.swing.JButton("Cerrar");
+        btnCerrar.addActionListener(e -> dialogo.dispose());
+
+        javax.swing.JPanel pnlBoton = new javax.swing.JPanel();
+        pnlBoton.add(btnCerrar);
+
+        pnlInferior.add(lblDesc, java.awt.BorderLayout.CENTER);
+        pnlInferior.add(pnlBoton, java.awt.BorderLayout.SOUTH);
+
+        dialogo.add(lblImagen, java.awt.BorderLayout.CENTER);
+        dialogo.add(pnlInferior, java.awt.BorderLayout.SOUTH);
+
+        dialogo.setVisible(true);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgDesinfeccion;
     private javax.swing.JButton btnSiguiente;
