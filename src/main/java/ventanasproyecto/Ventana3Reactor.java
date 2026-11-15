@@ -10,19 +10,36 @@ package ventanasproyecto;
  */
 public class Ventana3Reactor extends javax.swing.JFrame {
     
-    // Variables para almacenar datos recibidos de V2
-    private double caudalReal = 10.0;
+   private double caudalReal = 10.0;
+    private double sstBruto = 220.0;
+    private double dboBruto = 200.0;
+    private double dqoBruto = 400.0;
     private double sstEntrada = 77.0;
     private double dboEntrada = 130.0;
     private double dqoEntrada = 260.0;
     private double lodosPrimarios = 120.0;
+    private String estadoPlanta = "Normal";
 
-    // Constructor que recibe datos reales desde V2
+    public Ventana3Reactor() {
+        this(10.0, 220.0, 200.0, 400.0, 77.0, 130.0, 260.0, 120.0, "Normal");
+    }
+
     public Ventana3Reactor(double caudalReal, double sstEntrada, double dboEntrada, double dqoEntrada) {
+        this(caudalReal, 220.0, 200.0, 400.0, sstEntrada, dboEntrada, dqoEntrada, 120.0, "Normal");
+    }
+
+    public Ventana3Reactor(double caudalReal, double sstBruto, double dboBruto, double dqoBruto,
+                           double sstEntrada, double dboEntrada, double dqoEntrada,
+                           double lodosPrimarios, String estadoPlanta) {
         this.caudalReal = caudalReal;
+        this.sstBruto = sstBruto;
+        this.dboBruto = dboBruto;
+        this.dqoBruto = dqoBruto;
         this.sstEntrada = sstEntrada;
         this.dboEntrada = dboEntrada;
         this.dqoEntrada = dqoEntrada;
+        this.lodosPrimarios = lodosPrimarios;
+        this.estadoPlanta = estadoPlanta;
 
         initComponents();
         buttonGroup1.add(rbControlAuto);
@@ -111,10 +128,6 @@ public class Ventana3Reactor extends javax.swing.JFrame {
     }
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana3Reactor.class.getName());
-
-    public Ventana3Reactor() {
-        this(10.0, 77.0, 130.0, 260.0);
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -225,7 +238,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         lblConsumoEnergia.setText("Consumo Energético: kWh/día");
 
         lblResultados.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
-        lblResultados.setText("RESUTADOS BIOLOGICOS");
+        lblResultados.setText("RESULTADOS BIOLOGICOS");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -284,7 +297,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(19, 19, 19)
                                 .addComponent(btnVolver)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnSiguiente)
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -356,14 +369,12 @@ actualizarSimulacion();        // TODO add your handling code here:
     }//GEN-LAST:event_rbControlManualActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-new Ventana2Tratamiento(caudalReal, sstEntrada).setVisible(true);
-this.dispose();        // TODO add your handling code here:
+    new Ventana2Tratamiento(caudalReal, sstBruto, dboBruto, dqoBruto, estadoPlanta).setVisible(true);
+    this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-    // TODO add your handling code here:
-                                                 
-        String textoOd = txtOxigeno.getText().trim();
+    String textoOd = txtOxigeno.getText().trim();
         if (textoOd.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Por favor, ingrese la cantidad de Oxígeno Disuelto (OD).",
@@ -392,9 +403,11 @@ this.dispose();        // TODO add your handling code here:
             procesos.ReactorBiologico reactor =
                     new procesos.ReactorBiologico(caudalReal, sstEntrada, dboEntrada, dqoEntrada, od, esAuto);
 
-            double dboSalidaV3 = reactor.getDboSalida();
-
-            Ventana4Clarificacion v4 = new Ventana4Clarificacion(caudalReal, sstEntrada, dboSalidaV3, lodosPrimarios);
+            Ventana4Clarificacion v4 = new Ventana4Clarificacion(
+                    caudalReal, sstBruto, dboBruto, dqoBruto,
+                    sstEntrada, reactor.getDboSalida(), reactor.getDqoSalida(),
+                    lodosPrimarios, reactor.getConsumoEnergiaKwhDia(), estadoPlanta
+            );
             v4.setVisible(true);
             this.dispose();
         } catch (NumberFormatException e) {
@@ -403,7 +416,6 @@ this.dispose();        // TODO add your handling code here:
                     "Formato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
             txtOxigeno.requestFocus();
         }
-    
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     /**

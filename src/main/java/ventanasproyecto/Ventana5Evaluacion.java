@@ -22,13 +22,13 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private double lodosTotales = 135.0;
 
     private procesos.EvaluacionEfluente evaluacion;
-
+    
     public Ventana5Evaluacion() {
         initComponents();
         cargarDatos();
+        this.setLocationRelativeTo(null);
         this.getRootPane().setDefaultButton(btnReiniciar);
     }
-
     public Ventana5Evaluacion(double sstEntrada, double sstSalida, double dboEntrada, 
                              double dboSalida, double dqoEntrada, double dqoSalida, 
                              double consumoTotal, double lodosTotales) {
@@ -43,28 +43,52 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
 
         initComponents();
         cargarDatos();
-    }
+        }
 
     private void cargarDatos() {
         evaluacion = new procesos.EvaluacionEfluente(
                 sstEntrada, sstSalida, dboEntrada, dboSalida, dqoEntrada, dqoSalida, consumoTotal, lodosTotales);
 
-        // Actualizar Semáforo
         boolean cumple = evaluacion.cumpleNormativaGlobal();
-        if (rbCumple != null && rbNoCumple != null) {
-            rbCumple.setSelected(cumple);
-            rbNoCumple.setSelected(!cumple);
+
+        // 2. Cambio automático de color del recuadro (pnlSemaforo)
+        pnlSemaforo.setOpaque(true);
+        if (cumple) {
+            java.awt.Color verdeFondo = new java.awt.Color(232, 245, 233);
+            java.awt.Color verdeBorde = new java.awt.Color(46, 125, 50);
+            pnlSemaforo.setBackground(verdeFondo);
+            pnlSemaforo.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                    javax.swing.BorderFactory.createLineBorder(verdeBorde, 2),
+                    javax.swing.BorderFactory.createEmptyBorder(6, 10, 6, 10)
+            ));
+            lblDictamen.setForeground(new java.awt.Color(27, 94, 32));
+            lblDictamen.setText("<html><center><b>&#10004; VERTIMIENTO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
+        } else {
+            java.awt.Color rojoFondo = new java.awt.Color(255, 235, 238);
+            java.awt.Color rojoBorde = new java.awt.Color(198, 40, 40);
+            pnlSemaforo.setBackground(rojoFondo);
+            pnlSemaforo.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                    javax.swing.BorderFactory.createLineBorder(rojoBorde, 2),
+                    javax.swing.BorderFactory.createEmptyBorder(6, 10, 6, 10)
+            ));
+            lblDictamen.setForeground(new java.awt.Color(183, 28, 28));
+            lblDictamen.setText("<html><center><b>&#10008; VERTIMIENTO NO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
         }
-        lblDictamen.setText(cumple ? 
-                "Vertimiento CUMPLE con la Resolución 0631 de 2015." : 
-                "Vertimiento NO CUMPLE con la Resolución 0631 de 2015.");
 
-        // Actualizar Tablero Resumen
+        // 3. Tablero Resumen con color individual por parámetro
+        java.awt.Color okColor = new java.awt.Color(27, 94, 32);
+        java.awt.Color errColor = new java.awt.Color(198, 40, 40);
+
         lblDashSST.setText(String.format("SST   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", sstEntrada, sstSalida, procesos.EvaluacionEfluente.LIMITE_SST));
-        lblDashDBO.setText(String.format("DBO5  │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dboEntrada, dboSalida, procesos.EvaluacionEfluente.LIMITE_DBO));
-        lblDashDQO.setText(String.format("DQO   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, procesos.EvaluacionEfluente.LIMITE_DQO));
+        lblDashSST.setForeground(sstSalida <= procesos.EvaluacionEfluente.LIMITE_SST ? okColor : errColor);
 
-        // Actualizar Estadísticas Globale
+        lblDashDBO.setText(String.format("DBO5  │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dboEntrada, dboSalida, procesos.EvaluacionEfluente.LIMITE_DBO));
+        lblDashDBO.setForeground(dboSalida <= procesos.EvaluacionEfluente.LIMITE_DBO ? okColor : errColor);
+
+        lblDashDQO.setText(String.format("DQO   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, procesos.EvaluacionEfluente.LIMITE_DQO));
+        lblDashDQO.setForeground(dqoSalida <= procesos.EvaluacionEfluente.LIMITE_DQO ? okColor : errColor);
+
+        // 4. Estadísticas Globales
         lblEficDBO.setText(String.format("Eficiencia DBO: %.1f %%", evaluacion.getEficienciaDBO()));
         lblEficSST.setText(String.format("Eficiencia SST: %.1f %%", evaluacion.getEficienciaSST()));
         lblConsumoTotal.setText(String.format("Consumo Total: %.1f kWh/día", consumoTotal));
@@ -88,8 +112,6 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         pnlSemaforo = new javax.swing.JPanel();
-        rbCumple = new javax.swing.JRadioButton();
-        rbNoCumple = new javax.swing.JRadioButton();
         lblDictamen = new javax.swing.JLabel();
         lblDashSST = new javax.swing.JLabel();
         lblDashDBO = new javax.swing.JLabel();
@@ -105,11 +127,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        buttonGroup1.add(rbCumple);
-        rbCumple.setText("CUMPLE");
-
-        buttonGroup1.add(rbNoCumple);
-        rbNoCumple.setText("NO CUMPLE");
+        pnlSemaforo.setPreferredSize(new java.awt.Dimension(200, 100));
 
         lblDictamen.setText("<html><center>Vertimiento CUMPLE<br>Resolución 0631 de 2015</center></html>");
 
@@ -118,27 +136,16 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         pnlSemaforoLayout.setHorizontalGroup(
             pnlSemaforoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSemaforoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlSemaforoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlSemaforoLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(lblDictamen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlSemaforoLayout.createSequentialGroup()
-                        .addComponent(rbCumple)
-                        .addGap(18, 18, 18)
-                        .addComponent(rbNoCumple)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addComponent(lblDictamen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         pnlSemaforoLayout.setVerticalGroup(
             pnlSemaforoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSemaforoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlSemaforoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rbCumple)
-                    .addComponent(rbNoCumple))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(25, 25, 25)
                 .addComponent(lblDictamen, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         lblDashSST.setText("SST │ 220 mg/L │ 6.6 mg/L │ 90 mg/L");
@@ -177,32 +184,32 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnVolver)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnReiniciar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblDashSST)
-                                            .addComponent(lblDashDBO)
-                                            .addComponent(lblDashDQO))))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btnVolver)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnReiniciar)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblLodosTotales)
-                            .addComponent(lblConsumoTotal)
-                            .addComponent(lblEficDBO)
-                            .addComponent(lblEficSST))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblLodosTotales)
+                                .addComponent(lblConsumoTotal)
+                                .addComponent(lblEficDBO)
+                                .addComponent(lblEficSST))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(69, 69, 69)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnExportar)
-                        .addGap(70, 70, 70))))
+                        .addGap(48, 48, 48))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblDashSST)
+                            .addComponent(lblDashDBO)
+                            .addComponent(lblDashDQO))
+                        .addGap(0, 25, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,7 +220,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblEficDBO)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblEficSST)
@@ -222,14 +229,15 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblLodosTotales))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(13, 13, 13)
                         .addComponent(lblDashSST)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblDashDBO)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblDashDQO)
-                        .addGap(65, 65, 65)
+                        .addGap(52, 52, 52)
                         .addComponent(btnExportar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVolver)
                     .addComponent(btnReiniciar))
@@ -308,7 +316,5 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private javax.swing.JLabel lblEficSST;
     private javax.swing.JLabel lblLodosTotales;
     private javax.swing.JPanel pnlSemaforo;
-    private javax.swing.JRadioButton rbCumple;
-    private javax.swing.JRadioButton rbNoCumple;
     // End of variables declaration//GEN-END:variables
 }

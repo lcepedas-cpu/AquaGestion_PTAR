@@ -3,6 +3,8 @@ package procesos;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class EvaluacionEfluente {
     private double sstEntrada;
@@ -50,11 +52,14 @@ public class EvaluacionEfluente {
 
     // Exportación del reporte a archivo físico .TXT
     public boolean exportarReporteTXT(String rutaArchivo) {
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String fechaHora = LocalDateTime.now().format(formato);
         try (PrintWriter writer = new PrintWriter(new FileWriter(rutaArchivo))) {
             writer.println("====================================================");
             writer.println("       INFORME TÉCNICO DE EVALUACIÓN AMBIENTAL      ");
             writer.println("                AquaGestion PTAR                    ");
             writer.println("====================================================");
+            writer.printf("Fecha y Hora   : %s%n", fechaHora);
             writer.printf("Dictamen Global: %s%n", cumpleNormativaGlobal() ? "CUMPLE (Res. 0631/2015)" : "NO CUMPLE");
             writer.println("----------------------------------------------------");
             writer.println("TABLERO RESUMEN DE PARÁMETROS:");

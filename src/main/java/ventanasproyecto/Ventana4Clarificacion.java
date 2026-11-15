@@ -7,39 +7,51 @@ package ventanasproyecto;
 import javax.swing.JOptionPane;
 
 public class Ventana4Clarificacion extends javax.swing.JFrame {
-    // Variables de clase para recibir los datos de ventanas anteriores
     private double caudalReal = 10.0;
+    private double sstBruto = 220.0;
+    private double dboBruto = 200.0;
+    private double dqoBruto = 400.0;
     private double sstSalidaV2 = 77.0;
     private double dboSalidaV3 = 13.0;
+    private double dqoSalidaV3 = 45.0;
     private double lodosPrimarios = 120.0;
+    private double energiaV3 = 15.0;
+    private String estadoPlanta = "Normal";
     private boolean alertaMostrada = false;
-    
 
-    // Constructor por defecto (para vista previa en NetBeans)
     public Ventana4Clarificacion() {
-        initComponents();
-        rbCloracion.setSelected(true);
-        actualizarSimulacion(true);
-        this.getRootPane().setDefaultButton(btnSiguiente);//Item 11: Ejecutar con Enter[cite: 13]
+        this(10.0, 220.0, 200.0, 400.0, 77.0, 13.0, 45.0, 120.0, 15.0, "Normal");
     }
 
-    // Constructor real que recibe datos acumulados desde V3
     public Ventana4Clarificacion(double caudalReal, double sstSalidaV2, double dboSalidaV3, double lodosPrimarios) {
+        this(caudalReal, 220.0, 200.0, 400.0, sstSalidaV2, dboSalidaV3, dboSalidaV3 * 2.5, lodosPrimarios, 15.0, "Normal");
+    }
+
+    public Ventana4Clarificacion(double caudalReal, double sstBruto, double dboBruto, double dqoBruto,
+                                 double sstSalidaV2, double dboSalidaV3, double dqoSalidaV3,
+                                 double lodosPrimarios, double energiaV3, String estadoPlanta) {
         this.caudalReal = caudalReal;
+        this.sstBruto = sstBruto;
+        this.dboBruto = dboBruto;
+        this.dqoBruto = dqoBruto;
         this.sstSalidaV2 = sstSalidaV2;
         this.dboSalidaV3 = dboSalidaV3;
+        this.dqoSalidaV3 = dqoSalidaV3;
         this.lodosPrimarios = lodosPrimarios;
-        
+        this.energiaV3 = energiaV3;
+        this.estadoPlanta = estadoPlanta;
+
         initComponents();
-        
-        // Item 12: Formato a dos decimales (%.2f)[cite: 13]
+        this.setSize(880, 440);
+        this.setLocationRelativeTo(null);
+
         lblQreal.setText(String.format("Qreal: %.1f L/s", caudalReal));
         lblSstV2.setText(String.format("SST Salida V2: %.1f mg/L", sstSalidaV2));
         lblDboV3.setText(String.format("DBO Salida V3: %.2f mg/L", dboSalidaV3));
-        lblLodosPrimarios.setText(String.format("Lodos Primarios: %.2f kg/día", lodosPrimarios));
-       
+        lblLodosPrimarios.setText(String.format("Lodos Primarios: %.1f kg/día", lodosPrimarios));
+
         rbCloracion.setSelected(true);
-        this.getRootPane().setDefaultButton(btnSiguiente);//Item 11: Ejecutar con Enter[cite:13]
+        this.getRootPane().setDefaultButton(btnSiguiente);
         actualizarSimulacion(true);
     }
 
@@ -133,7 +145,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
         jLabel2.setText("SALIDA Y BALANCE DE LODOS");
 
-        jLabel3.setText("Selecciona el método de desinfección");
+        jLabel3.setText("Selecciona el método de desinfección:");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos desde entrada"));
 
@@ -149,19 +161,19 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(lblQreal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblLodosPrimarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblSstV2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblDboV3, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(lblDboV3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(lblQreal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblSstV2)
@@ -169,7 +181,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
                 .addComponent(lblDboV3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblLodosPrimarios)
-                .addGap(30, 30, 30))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -180,69 +192,55 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(273, 273, 273)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel2)
-                                    .addComponent(lblSstFinal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lblLodosBiologicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lblLodosTotales, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 953, Short.MAX_VALUE))
+                        .addComponent(btnVolver)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSiguiente))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnVolver)
-                                .addGap(569, 569, 569)
-                                .addComponent(btnSiguiente))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(49, 49, 49)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(80, 80, 80)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(70, 70, 70)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(rbCloracion)
-                                            .addComponent(rbUV))))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                            .addComponent(rbUV))
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel2)
+                                    .addComponent(lblSstFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblLodosBiologicos, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblLodosTotales, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel5))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rbCloracion)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbUV, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblSstFinal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblLodosBiologicos)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(rbUV, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblLodosTotales)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(122, 122, 122)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnVolver)
-                            .addComponent(btnSiguiente))
-                        .addContainerGap())))
+                        .addComponent(lblSstFinal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblLodosBiologicos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblLodosTotales)))
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnVolver)
+                    .addComponent(btnSiguiente))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -267,13 +265,15 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
     }//GEN-LAST:event_rbUVActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-new Ventana3Reactor().setVisible(true);
-this.dispose();        // TODO add your handling code here:
+    new Ventana3Reactor(
+                caudalReal, sstBruto, dboBruto, dqoBruto,
+                sstSalidaV2, dboBruto * 0.65, dqoBruto * 0.65, lodosPrimarios, estadoPlanta
+        ).setVisible(true);
+        this.dispose();       // TODO add your handling code here:
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-// Ítem 10: Validación de selección
-        if (!rbCloracion.isSelected() && !rbUV.isSelected()) {
+if (!rbCloracion.isSelected() && !rbUV.isSelected()) {
             JOptionPane.showMessageDialog(
                 this,
                 "Debe seleccionar un método de desinfección antes de continuar.",
@@ -283,21 +283,17 @@ this.dispose();        // TODO add your handling code here:
             return;
         }
 
-        JOptionPane.showMessageDialog(this, "Avanzando a la Evaluación Final del Efluente.");
-
         boolean esCloracion = rbCloracion.isSelected();
 
         procesos.TratamientoFinal finalT = 
             new procesos.TratamientoFinal(caudalReal, sstSalidaV2, dboSalidaV3, lodosPrimarios, esCloracion);
 
         double sstFinal = finalT.getSstFinal();
-        double dboFinal = dboSalidaV3 * 0.60;
-        double dqoFinal = dboFinal * 2.0;
-        double consumoTotal = 15.0 + finalT.getConsumoEnergiaKwh();
+        double consumoTotal = energiaV3 + finalT.getConsumoEnergiaKwh();
         double lodosTotales = finalT.getLodosTotalesKgDia();
 
         Ventana5Evaluacion v5 = new Ventana5Evaluacion(
-            220.0, sstFinal, 200.0, dboFinal, 400.0, dqoFinal, consumoTotal, lodosTotales
+            sstBruto, sstFinal, dboBruto, dboSalidaV3, dqoBruto, dqoSalidaV3, consumoTotal, lodosTotales
         );
         v5.setLocationRelativeTo(null);
         v5.setVisible(true);

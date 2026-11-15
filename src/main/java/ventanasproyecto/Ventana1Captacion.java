@@ -19,6 +19,7 @@ package ventanasproyecto;
          */
         public Ventana1Captacion() {
             initComponents();
+            txtResumen.setEditable(false);
             this.setLocationRelativeTo(null);
             actualizarImagenFuente();
             this.getRootPane().setDefaultButton(btnSiguiente);
@@ -171,10 +172,7 @@ package ventanasproyecto;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-                                                                                              
-    
 
-    
         try {
             // 1. Validación de Caudal Base (#1)
             if (txtCaudal.getText().trim().isEmpty()) {
@@ -207,6 +205,14 @@ package ventanasproyecto;
             double qBase = Double.parseDouble(txtCaudal.getText().trim());
             String fuente = cbFuente.getSelectedItem().toString();
 
+            if (qBase <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "El Caudal Base (#1) debe ser mayor a 0 L/s.",
+                        "Valor Inválido",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
             String estado = "";
             if (rbNormal.isSelected()) {
                 estado = "Normal";
@@ -221,8 +227,13 @@ package ventanasproyecto;
                     = new procesos.MuestraAgua(qBase, fuente, estado);
 
             ventanasproyecto.Ventana2Tratamiento v2
-                    = new ventanasproyecto.Ventana2Tratamiento(muestra.getCaudalReal(), muestra.getSstInicial());
-
+                    = new ventanasproyecto.Ventana2Tratamiento(
+                            muestra.getCaudalReal(),
+                            muestra.getSstInicial(),
+                            muestra.getDboInicial(),
+                            muestra.getDqoInicial(),
+                            estado
+                    );
             v2.setLocationRelativeTo(null);
             v2.setVisible(true);
             this.dispose();
@@ -259,6 +270,11 @@ package ventanasproyecto;
             double qBase = Double.parseDouble(txtCaudal.getText().trim());
             String fuente = cbFuente.getSelectedItem().toString();
 
+            if (qBase <= 0) {
+                txtResumen.setText("⚠️ ERROR: El Caudal Base (#1) debe ser mayor a 0 L/s.");
+                return;
+            }
+            
             String estado = "";
             if (rbNormal.isSelected()) {
                 estado = "Normal";

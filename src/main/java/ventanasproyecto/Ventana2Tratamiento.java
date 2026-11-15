@@ -12,21 +12,29 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
     
     private double caudalReal = 10.0;
     private double sstInicial = 220.0;
+    private double dboInicial = 200.0;
+    private double dqoInicial = 400.0;
     private String estadoPlanta = "Normal";
     private boolean alertaMostrada = false;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana2Tratamiento.class.getName());
 
     public Ventana2Tratamiento() {
-        this(10.0, 220.0, "Normal");
+        this(10.0, 220.0, 200.0, 400.0, "Normal");
     }
 
     public Ventana2Tratamiento(double caudalReal, double sstInicial) {
-        this(caudalReal, sstInicial, "Normal");
+        this(caudalReal, sstInicial, 200.0, 400.0, "Normal");
     }
 
     public Ventana2Tratamiento(double caudalReal, double sstInicial, String estadoPlanta) {
+        this(caudalReal, sstInicial, 200.0, 400.0, estadoPlanta);
+    }
+
+    public Ventana2Tratamiento(double caudalReal, double sstInicial, double dboInicial, double dqoInicial, String estadoPlanta) {
         this.caudalReal = caudalReal;
         this.sstInicial = sstInicial;
+        this.dboInicial = dboInicial;
+        this.dqoInicial = dqoInicial;
         this.estadoPlanta = (estadoPlanta != null && !estadoPlanta.isEmpty()) ? estadoPlanta : "Normal";
 
         initComponents();
@@ -338,10 +346,14 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
 
         procesos.FiltroPrimario filtro = calcularFiltroActual(false);
         double sstSalidaV2 = filtro.getSstSalida();
-        double dboEntradaV3 = 130.0;
-        double dqoEntradaV3 = 260.0;
+        double dboSalidaV2 = this.dboInicial * 0.65;
+        double dqoSalidaV2 = this.dqoInicial * 0.65;
+        double lodosPrimariosV2 = filtro.getLodosRetenidosKgDia();
 
-        Ventana3Reactor v3 = new Ventana3Reactor(caudalReal, sstSalidaV2, dboEntradaV3, dqoEntradaV3);
+        Ventana3Reactor v3 = new Ventana3Reactor(
+                caudalReal, sstInicial, dboInicial, dqoInicial,
+                sstSalidaV2, dboSalidaV2, dqoSalidaV2, lodosPrimariosV2, estadoPlanta
+        );
         v3.setVisible(true);
         this.dispose(); 
     }//GEN-LAST:event_btnSiguienteActionPerformed
