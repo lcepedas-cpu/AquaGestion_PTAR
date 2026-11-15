@@ -45,11 +45,11 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         this.setSize(880, 440);
         this.setLocationRelativeTo(null);
 
-        lblQreal.setText(String.format("Qreal: %.1f L/s", caudalReal));
-        lblSstV2.setText(String.format("SST Salida V2: %.1f mg/L", sstSalidaV2));
+        lblQreal.setText(String.format("Qreal: %.2f L/s", caudalReal));
+        lblSstV2.setText(String.format("SST Salida V2: %.2f mg/L", sstSalidaV2));
         lblDboV3.setText(String.format("DBO Salida V3: %.2f mg/L", dboSalidaV3));
-        lblLodosPrimarios.setText(String.format("Lodos Primarios: %.1f kg/día", lodosPrimarios));
-
+        lblLodosPrimarios.setText(String.format("Lodos Primarios: %.2f kg/día", lodosPrimarios));
+        
         rbCloracion.setSelected(true);
         this.getRootPane().setDefaultButton(btnSiguiente);
         actualizarSimulacion(true);
@@ -77,6 +77,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
              "Se requiere activar el lecho de secado o el filtro prensa.",
              finalT.getLodosTotalesKgDia()
          );
+         procesos.ReproductorAudio.reproducirAlerta();
          JOptionPane.showMessageDialog(
              this,
              mensaje,
@@ -274,6 +275,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
 if (!rbCloracion.isSelected() && !rbUV.isSelected()) {
+            procesos.ReproductorAudio.reproducirAlerta();
             JOptionPane.showMessageDialog(
                 this,
                 "Debe seleccionar un método de desinfección antes de continuar.",

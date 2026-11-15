@@ -46,14 +46,29 @@ public class EvaluacionEfluente {
         return Math.max(0, ((dqoEntrada - dqoSalida) / dqoEntrada) * 100.0);
     }
 
+    // Evaluación normativa mediante arreglos y estructura repetitiva (for)
     public boolean cumpleNormativaGlobal() {
-        return sstSalida <= LIMITE_SST && dboSalida <= LIMITE_DBO && dqoSalida <= LIMITE_DQO;
+        double[] salidas = {sstSalida, dboSalida, dqoSalida};
+        double[] limites = {LIMITE_SST, LIMITE_DBO, LIMITE_DQO};
+
+        for (int i = 0; i < salidas.length; i++) {
+            if (salidas[i] > limites[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    // Exportación del reporte a archivo físico .TXT
+    // Exportación del reporte a archivo físico .TXT con formato a dos decimales
     public boolean exportarReporteTXT(String rutaArchivo) {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String fechaHora = LocalDateTime.now().format(formato);
+
+        String[] parametros = {"SST ", "DBO5", "DQO "};
+        double[] entradas = {sstEntrada, dboEntrada, dqoEntrada};
+        double[] salidas = {sstSalida, dboSalida, dqoSalida};
+        double[] limites = {LIMITE_SST, LIMITE_DBO, LIMITE_DQO};
+
         try (PrintWriter writer = new PrintWriter(new FileWriter(rutaArchivo))) {
             writer.println("====================================================");
             writer.println("       INFORME TÉCNICO DE EVALUACIÓN AMBIENTAL      ");
@@ -63,15 +78,20 @@ public class EvaluacionEfluente {
             writer.printf("Dictamen Global: %s%n", cumpleNormativaGlobal() ? "CUMPLE (Res. 0631/2015)" : "NO CUMPLE");
             writer.println("----------------------------------------------------");
             writer.println("TABLERO RESUMEN DE PARÁMETROS:");
-            writer.printf("• SST  : Entrada = %.1f mg/L | Salida = %.1f mg/L | Norma = %.0f mg/L%n", sstEntrada, sstSalida, LIMITE_SST);
-            writer.printf("• DBO5 : Entrada = %.1f mg/L | Salida = %.1f mg/L | Norma = %.0f mg/L%n", dboEntrada, dboSalida, LIMITE_DBO);
-            writer.printf("• DQO  : Entrada = %.1f mg/L | Salida = %.1f mg/L | Norma = %.0f mg/L%n", dqoEntrada, dqoSalida, LIMITE_DQO);
+
+            for (int i = 0; i < parametros.length; i++) {
+                String estado = (salidas[i] <= limites[i]) ? "CUMPLE" : "NO CUMPLE";
+                writer.printf("• %s : Entrada = %.2f mg/L | Salida = %.2f mg/L | Norma = %.2f mg/L [%s]%n",
+                        parametros[i], entradas[i], salidas[i], limites[i], estado);
+            }
+
             writer.println("----------------------------------------------------");
             writer.println("ESTADÍSTICAS GLOBALES:");
-            writer.printf("• Eficiencia DBO : %.2f %%%n", getEficienciaDBO());
             writer.printf("• Eficiencia SST : %.2f %%%n", getEficienciaSST());
-            writer.printf("• Consumo Total  : %.1f kWh/día%n", consumoTotalEnergia);
-            writer.printf("• Lodos Totales  : %.1f kg/día%n", lodosTotales);
+            writer.printf("• Eficiencia DBO : %.2f %%%n", getEficienciaDBO());
+            writer.printf("• Eficiencia DQO : %.2f %%%n", getEficienciaDQO());
+            writer.printf("• Consumo Total  : %.2f kWh/día%n", consumoTotalEnergia);
+            writer.printf("• Lodos Totales  : %.2f kg/día%n", lodosTotales);
             writer.println("====================================================");
             return true;
         } catch (IOException e) {

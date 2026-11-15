@@ -107,18 +107,21 @@ package ventanasproyecto;
                                     .addComponent(jLabel2)
                                     .addComponent(rbLluvia)
                                     .addComponent(rbFalla))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
+                                .addGap(75, 75, 75)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnCalcular))))
+                                    .addComponent(jScrollPane1)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnCalcular)
+                                            .addComponent(jLabel3))
+                                        .addGap(0, 0, Short.MAX_VALUE)))))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(txtCaudal, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(cbFuente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -133,19 +136,21 @@ package ventanasproyecto;
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCaudal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtCaudal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 4, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(26, Short.MAX_VALUE)
                         .addComponent(lblImagenFuente, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,10 +165,10 @@ package ventanasproyecto;
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCalcular)
-                .addGap(12, 12, 12)
+                .addGap(10, 10, 10)
                 .addComponent(btnSiguiente)
                 .addContainerGap())
         );
@@ -172,10 +177,10 @@ package ventanasproyecto;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-
-        try {
+    try {
             // 1. Validación de Caudal Base (#1)
             if (txtCaudal.getText().trim().isEmpty()) {
+                procesos.ReproductorAudio.reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "Por favor ingrese un valor en el Caudal Base (#1).",
                         "Campo Vacío",
@@ -185,6 +190,7 @@ package ventanasproyecto;
 
             // 2. Validación de Tipo de Fuente (#2)
             if (cbFuente.getSelectedIndex() == 0) {
+                procesos.ReproductorAudio.reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "Por favor seleccione el Tipo de Fuente (#2).",
                         "Campo Requerido",
@@ -194,6 +200,7 @@ package ventanasproyecto;
 
             // 3. Validación de Estado Operativo (#3)
             if (!rbNormal.isSelected() && !rbLluvia.isSelected() && !rbFalla.isSelected()) {
+                procesos.ReproductorAudio.reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "Debe seleccionar un Estado Operativo (#3) para continuar.",
                         "Validación de Estado Operativo",
@@ -206,13 +213,14 @@ package ventanasproyecto;
             String fuente = cbFuente.getSelectedItem().toString();
 
             if (qBase <= 0) {
+                procesos.ReproductorAudio.reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "El Caudal Base (#1) debe ser mayor a 0 L/s.",
                         "Valor Inválido",
                         javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+
             String estado = "";
             if (rbNormal.isSelected()) {
                 estado = "Normal";
@@ -222,9 +230,29 @@ package ventanasproyecto;
                 estado = "Falla Operativa";
             }
 
-            // 5. Creación del objeto Muestra y apertura de Ventana 2
+            // 5. Creación del objeto Muestra y Alerta Operativa si hay contingencia
             procesos.MuestraAgua muestra
                     = new procesos.MuestraAgua(qBase, fuente, estado);
+
+            if (estado.equals("Sobrecarga por Lluvia")) {
+                procesos.ReproductorAudio.reproducirAlerta();
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        String.format("⚠️ ALERTA OPERATIVA - SOBRECARGA POR LLUVIA\n\n"
+                                + "El caudal de entrada se ha incrementado 2.5x (Qreal = %.2f L/s).\n"
+                                + "Se recomienda emplear Sedimentador Avanzado en la siguiente etapa.",
+                                muestra.getCaudalReal()),
+                        "Alerta Operativa - Captación",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+            } else if (estado.equals("Falla Operativa")) {
+                procesos.ReproductorAudio.reproducirAlerta();
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        String.format("🚨 ALERTA CRÍTICA - FALLA OPERATIVA\n\n"
+                                + "La carga contaminante aumentó 1.8x (SST = %.2f mg/L | DBO5 = %.2f mg/L).\n"
+                                + "Extreme el control de aireación en el reactor biológico.",
+                                muestra.getSstInicial(), muestra.getDboInicial()),
+                        "Alerta Crítica - Captación",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
 
             ventanasproyecto.Ventana2Tratamiento v2
                     = new ventanasproyecto.Ventana2Tratamiento(
@@ -239,6 +267,7 @@ package ventanasproyecto;
             this.dispose();
 
         } catch (NumberFormatException ex) {
+            procesos.ReproductorAudio.reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Por favor ingrese un número válido en el Caudal Base (#1).",
                     "Error de Validación",
@@ -289,19 +318,20 @@ package ventanasproyecto;
 
             String textoResumen = String.format(
                     "=== RESUMEN DE CAPTACIÓN ===\n"
-                    + "• Caudal Base: %.1f L/s\n"
-                    + "• Caudal Real (Qreal): %.1f L/s\n"
+                    + "• Caudal Base: %.2f L/s\n"
+                    + "• Caudal Real (Qreal): %.2f L/s\n"
                     + "• Fuente de Agua: %s\n"
                     + "• Estado Operativo: %s\n"
                     + "----------------------------\n"
-                    + "• SST Inicial: %.1f mg/L\n"
-                    + "• DBO5 Base: %.1f mg/L\n"
-                    + "• DQO Base: %.1f mg/L",
+                    + "• SST Inicial: %.2f mg/L\n"
+                    + "• DBO5 Inicial: %.2f mg/L\n"
+                    + "• DQO Inicial: %.2f mg/L",
                     qBase, muestra.getCaudalReal(), fuente, estado,
-                    muestra.getSstInicial(), muestra.getDboBase(), muestra.getDqoBase()
+                    muestra.getSstInicial(), muestra.getDboInicial(), muestra.getDqoInicial()
             );
 
             txtResumen.setText(textoResumen);
+            txtResumen.setCaretPosition(0);
 
         } catch (NumberFormatException ex) {
             txtResumen.setText("⚠️ ERROR: Ingrese un valor numérico válido en el Caudal Base (#1).");
