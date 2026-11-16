@@ -167,6 +167,8 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(570, 380));
+        setResizable(false);
 
         txtOxigeno.addActionListener(this::txtOxigenoActionPerformed);
 
@@ -176,7 +178,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         rbControlManual.setText("Control Manual de Sopladores");
         rbControlManual.addActionListener(this::rbControlManualActionPerformed);
 
-        btnVolver.setText("← Volver a V2");
+        btnVolver.setText("← Volver a Primario");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
 
         btnSiguiente.setText("Pasar a Clarificación →");
@@ -191,7 +193,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
         jLabel3.setText("CONTROL DE AIREACIÓN");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos desde Entrada"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos desde Entrada", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Black", 0, 12))); // NOI18N
 
         lblQreal.setText("Caudal Real :  L/s");
 
@@ -276,6 +278,8 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         lblAireacion.setMinimumSize(new java.awt.Dimension(180, 95));
         lblAireacion.setPreferredSize(new java.awt.Dimension(180, 95));
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 102, 102));
         jLabel2.setText("Etapa 3: Tratamiento Secundario");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -295,25 +299,26 @@ public class Ventana3Reactor extends javax.swing.JFrame {
                                 .addComponent(jLabel1))
                             .addComponent(rbControlAuto)
                             .addComponent(rbControlManual))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblAireacion, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(54, 54, 54))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addContainerGap(334, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnVolver)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSiguiente)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel5)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2)))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(

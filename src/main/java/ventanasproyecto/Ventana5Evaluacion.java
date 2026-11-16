@@ -124,8 +124,11 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         btnReiniciar = new javax.swing.JButton();
         btnExportar = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(500, 300));
+        setResizable(false);
 
         pnlSemaforo.setPreferredSize(new java.awt.Dimension(200, 100));
 
@@ -162,7 +165,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
 
         lblLodosTotales.setText("Lodos Totales: [ ___ ] kg/día");
 
-        btnVolver.setText("← Volver a V4");
+        btnVolver.setText("← Volver a Tratamiento final");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
 
         btnReiniciar.setText("🔄 Reiniciar Simulación");
@@ -175,6 +178,10 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI Black", 2, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 102, 102));
         jLabel5.setText("AquaGestion_PTAR");
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 2, 13)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 102, 102));
+        jLabel1.setText("Evaluación");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -199,8 +206,13 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                                 .addComponent(jLabel5)
                                 .addGap(69, 69, 69)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnExportar)
-                        .addGap(48, 48, 48))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnExportar)
+                                .addGap(48, 48, 48))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addContainerGap())))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -215,7 +227,9 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel5)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel1))
                 .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -306,6 +320,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private javax.swing.JButton btnReiniciar;
     private javax.swing.JButton btnVolver;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel lblConsumoTotal;
     private javax.swing.JLabel lblDashDBO;
