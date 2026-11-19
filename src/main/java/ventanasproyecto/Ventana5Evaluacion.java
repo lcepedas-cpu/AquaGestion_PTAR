@@ -4,14 +4,18 @@
  */
 package ventanasproyecto;
 
+import java.awt.Color;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-/**
- *
- * @author Fa051
- */
+import javax.swing.SwingConstants;
+
 public class Ventana5Evaluacion extends javax.swing.JFrame {
-    // Datos por defecto para vista previa
+
     private double sstEntrada = 220.0;
     private double sstSalida = 6.6;
     private double dboEntrada = 200.0;
@@ -22,16 +26,15 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private double lodosTotales = 135.0;
 
     private procesos.EvaluacionEfluente evaluacion;
-    
+    private String resumenDiagnosticoTexto = "";
+
     public Ventana5Evaluacion() {
-        initComponents();
-        cargarDatos();
-        this.setLocationRelativeTo(null);
-        this.getRootPane().setDefaultButton(btnReiniciar);
+        this(220.0, 6.6, 200.0, 20.0, 400.0, 60.0, 40.0, 135.0);
     }
-    public Ventana5Evaluacion(double sstEntrada, double sstSalida, double dboEntrada, 
-                             double dboSalida, double dqoEntrada, double dqoSalida, 
-                             double consumoTotal, double lodosTotales) {
+
+    public Ventana5Evaluacion(double sstEntrada, double sstSalida, double dboEntrada,
+                              double dboSalida, double dqoEntrada, double dqoSalida,
+                              double consumoTotal, double lodosTotales) {
         this.sstEntrada = sstEntrada;
         this.sstSalida = sstSalida;
         this.dboEntrada = dboEntrada;
@@ -42,51 +45,139 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         this.lodosTotales = lodosTotales;
 
         initComponents();
+        this.setTitle("AquaGestion_PTAR - Etapa 5: Evaluación y Cumplimiento");
+        this.setSize(720, 560);
+        this.setLocationRelativeTo(null);
+        procesos.Fondoventana.aplicar(this, "/proyecto/imagenes/Fondo.jpg");
+        this.getRootPane().setDefaultButton(btnReiniciar);
+
         cargarDatos();
-        }
+    }
 
     private void cargarDatos() {
         evaluacion = new procesos.EvaluacionEfluente(
                 sstEntrada, sstSalida, dboEntrada, dboSalida, dqoEntrada, dqoSalida, consumoTotal, lodosTotales);
 
-        boolean cumple = evaluacion.cumpleNormativaGlobal();
+        double limSST = procesos.EvaluacionEfluente.LIMITE_SST; // 90 mg/L
+        double limDBO = procesos.EvaluacionEfluente.LIMITE_DBO; // 90 mg/L
+        double limDQO = procesos.EvaluacionEfluente.LIMITE_DQO; // 180 mg/L
 
-        // 2. Cambio automático de color del recuadro (pnlSemaforo)
+        boolean cumpleSST = sstSalida <= limSST;
+        boolean cumpleDBO = dboSalida <= limDBO;
+        boolean cumpleDQO = dqoSalida <= limDQO;
+        boolean cumpleGlobal = cumpleSST && cumpleDBO && cumpleDQO;
+
+        // Umbral preventivo: >= 80% del límite permitido
+        boolean alertaSST = cumpleSST && sstSalida >= (limSST * 0.80);
+        boolean alertaDBO = cumpleDBO && dboSalida >= (limDBO * 0.80);
+        boolean alertaDQO = cumpleDQO && dqoSalida >= (limDQO * 0.80);
+        boolean hayAlertaPreventiva = cumpleGlobal && (alertaSST || alertaDBO || alertaDQO);
+
+        // 1. Semáforo de 3 niveles (Verde / Amarillo / Rojo)
         pnlSemaforo.setOpaque(true);
-        if (cumple) {
-            java.awt.Color verdeFondo = new java.awt.Color(232, 245, 233);
-            java.awt.Color verdeBorde = new java.awt.Color(46, 125, 50);
-            pnlSemaforo.setBackground(verdeFondo);
-            pnlSemaforo.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-                    javax.swing.BorderFactory.createLineBorder(verdeBorde, 2),
-                    javax.swing.BorderFactory.createEmptyBorder(6, 10, 6, 10)
-            ));
-            lblDictamen.setForeground(new java.awt.Color(27, 94, 32));
-            lblDictamen.setText("<html><center><b>&#10004; VERTIMIENTO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
-        } else {
-            java.awt.Color rojoFondo = new java.awt.Color(255, 235, 238);
-            java.awt.Color rojoBorde = new java.awt.Color(198, 40, 40);
+        if (!cumpleGlobal) {
+            Color rojoFondo = new Color(255, 235, 238);
+            Color rojoBorde = new Color(198, 40, 40);
             pnlSemaforo.setBackground(rojoFondo);
-            pnlSemaforo.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-                    javax.swing.BorderFactory.createLineBorder(rojoBorde, 2),
-                    javax.swing.BorderFactory.createEmptyBorder(6, 10, 6, 10)
+            pnlSemaforo.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(rojoBorde, 2),
+                    BorderFactory.createEmptyBorder(6, 10, 6, 10)
             ));
-            lblDictamen.setForeground(new java.awt.Color(183, 28, 28));
+            lblDictamen.setForeground(new Color(183, 28, 28));
             lblDictamen.setText("<html><center><b>&#10008; VERTIMIENTO NO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
+            procesos.ReproductorAudio.reproducirAlerta();
+        } else if (hayAlertaPreventiva) {
+            Color amarilloFondo = new Color(255, 248, 225);
+            Color amarilloBorde = new Color(245, 127, 23);
+            pnlSemaforo.setBackground(amarilloFondo);
+            pnlSemaforo.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(amarilloBorde, 2),
+                    BorderFactory.createEmptyBorder(6, 10, 6, 10)
+            ));
+            lblDictamen.setForeground(new Color(230, 81, 0));
+            lblDictamen.setText("<html><center><b>&#9888; CUMPLE (ALERTA PREVENTIVA)</b><br>Cercano a límite Res. 0631</center></html>");
+        } else {
+            Color verdeFondo = new Color(232, 245, 233);
+            Color verdeBorde = new Color(46, 125, 50);
+            pnlSemaforo.setBackground(verdeFondo);
+            pnlSemaforo.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(verdeBorde, 2),
+                    BorderFactory.createEmptyBorder(6, 10, 6, 10)
+            ));
+            lblDictamen.setForeground(new Color(27, 94, 32));
+            lblDictamen.setText("<html><center><b>&#10004; VERTIMIENTO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
         }
 
-        // 3. Tablero Resumen con color individual por parámetro
-        java.awt.Color okColor = new java.awt.Color(27, 94, 32);
-        java.awt.Color errColor = new java.awt.Color(198, 40, 40);
+        // 2. Tablero Resumen con color individual por parámetro
+        Color okColor = new Color(27, 94, 32);
+        Color warnColor = new Color(230, 81, 0);
+        Color errColor = new Color(198, 40, 40);
 
-        lblDashSST.setText(String.format("SST   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", sstEntrada, sstSalida, procesos.EvaluacionEfluente.LIMITE_SST));
-        lblDashSST.setForeground(sstSalida <= procesos.EvaluacionEfluente.LIMITE_SST ? okColor : errColor);
+        lblDashSST.setText(String.format("SST   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", sstEntrada, sstSalida, limSST));
+        lblDashSST.setForeground(!cumpleSST ? errColor : (alertaSST ? warnColor : okColor));
 
-        lblDashDBO.setText(String.format("DBO5  │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dboEntrada, dboSalida, procesos.EvaluacionEfluente.LIMITE_DBO));
-        lblDashDBO.setForeground(dboSalida <= procesos.EvaluacionEfluente.LIMITE_DBO ? okColor : errColor);
+        lblDashDBO.setText(String.format("DBO5  │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dboEntrada, dboSalida, limDBO));
+        lblDashDBO.setForeground(!cumpleDBO ? errColor : (alertaDBO ? warnColor : okColor));
 
-        lblDashDQO.setText(String.format("DQO   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, procesos.EvaluacionEfluente.LIMITE_DQO));
-        lblDashDQO.setForeground(dqoSalida <= procesos.EvaluacionEfluente.LIMITE_DQO ? okColor : errColor);
+        lblDashDQO.setText(String.format("DQO   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, limDQO));
+        lblDashDQO.setForeground(!cumpleDQO ? errColor : (alertaDQO ? warnColor : okColor));
+
+        // 3. Diagnóstico operativo y acciones recomendadas en planta (txtDiagnostico)
+        txtDiagnostico.setHorizontalAlignment(SwingConstants.LEFT);
+        txtDiagnostico.setVerticalAlignment(SwingConstants.TOP);
+        txtDiagnostico.setOpaque(true);
+
+        List<String> acciones = new ArrayList<>();
+        if (!cumpleSST) {
+            acciones.add("SST fuera de norma: purgar lodos en clarificador y verificar coagulación/sedimentación.");
+        } else if (alertaSST) {
+            acciones.add("SST cercano al límite: monitorear turbidez y purga de sedimentador.");
+        }
+
+        if (!cumpleDBO) {
+            acciones.add("DBO5 excedida: aumentar aireación en el reactor biológico (V3) y revisar tiempo de retención.");
+        } else if (alertaDBO) {
+            acciones.add("DBO5 en zona preventiva: ajustar suministro de oxígeno disuelto en V3.");
+        }
+
+        if (!cumpleDQO) {
+            acciones.add("DQO excedida: controlar vertimientos industriales en entrada (V1) y optimizar oxidación.");
+        } else if (alertaDQO) {
+            acciones.add("DQO cercana al límite: vigilar carga orgánica no biodegradable en afluente.");
+        }
+
+        if (lodosTotales > 150.0) {
+            acciones.add("Lodos > 150 kg/día: mantener activo Lecho de Secado o Filtro Prensa.");
+        }
+
+        if (acciones.isEmpty()) {
+            txtDiagnostico.setBackground(new Color(232, 245, 233));
+            txtDiagnostico.setForeground(new Color(27, 94, 32));
+            txtDiagnostico.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(165, 214, 167), 1),
+                    BorderFactory.createEmptyBorder(6, 8, 6, 8)
+            ));
+            resumenDiagnosticoTexto = "Operación óptima: todos los parámetros cumplen holgadamente la Res. 0631/2015. Mantener régimen actual.";
+            txtDiagnostico.setText("<html><b>Diagnóstico Operativo:</b> " + resumenDiagnosticoTexto + "</html>");
+        } else if (!cumpleGlobal) {
+            txtDiagnostico.setBackground(new Color(255, 235, 238));
+            txtDiagnostico.setForeground(new Color(183, 28, 28));
+            txtDiagnostico.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(239, 154, 154), 1),
+                    BorderFactory.createEmptyBorder(6, 8, 6, 8)
+            ));
+            resumenDiagnosticoTexto = String.join(" | ", acciones);
+            txtDiagnostico.setText("<html><b>Acción Requerida en Planta:</b> " + String.join(" ", acciones) + "</html>");
+        } else {
+            txtDiagnostico.setBackground(new Color(255, 248, 225));
+            txtDiagnostico.setForeground(new Color(230, 81, 0));
+            txtDiagnostico.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(255, 224, 130), 1),
+                    BorderFactory.createEmptyBorder(6, 8, 6, 8)
+            ));
+            resumenDiagnosticoTexto = String.join(" | ", acciones);
+            txtDiagnostico.setText("<html><b>Recomendación Preventiva:</b> " + String.join(" ", acciones) + "</html>");
+        }
 
         // 4. Estadísticas Globales
         lblEficDBO.setText(String.format("Eficiencia DBO: %.1f %%", evaluacion.getEficienciaDBO()));
@@ -97,37 +188,31 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana5Evaluacion.class.getName());
 
-    /**
-     * Creates new form Ventana5Evaluacion
-     */
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         pnlSemaforo = new javax.swing.JPanel();
         lblDictamen = new javax.swing.JLabel();
-        lblDashSST = new javax.swing.JLabel();
-        lblDashDBO = new javax.swing.JLabel();
-        lblDashDQO = new javax.swing.JLabel();
-        lblEficDBO = new javax.swing.JLabel();
-        lblEficSST = new javax.swing.JLabel();
-        lblConsumoTotal = new javax.swing.JLabel();
-        lblLodosTotales = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
         btnReiniciar = new javax.swing.JButton();
         btnExportar = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        txtDiagnostico = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        lblDashSST = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        lblDashDBO = new javax.swing.JLabel();
+        lblDashDQO = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        lblEficDBO = new javax.swing.JLabel();
+        lblEficSST = new javax.swing.JLabel();
+        lblConsumoTotal = new javax.swing.JLabel();
+        lblLodosTotales = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(500, 300));
+        setPreferredSize(new java.awt.Dimension(720, 560));
         setResizable(false);
 
         pnlSemaforo.setPreferredSize(new java.awt.Dimension(200, 100));
@@ -139,31 +224,17 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         pnlSemaforoLayout.setHorizontalGroup(
             pnlSemaforoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSemaforoLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(29, 29, 29)
                 .addComponent(lblDictamen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         pnlSemaforoLayout.setVerticalGroup(
             pnlSemaforoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSemaforoLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(26, 26, 26)
                 .addComponent(lblDictamen, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
-
-        lblDashSST.setText("SST │ 220 mg/L │ 6.6 mg/L │ 90 mg/L");
-
-        lblDashDBO.setText("DBO5 │ 200 mg/L │ 20.0 mg/L │ 90 mg/L");
-
-        lblDashDQO.setText("DQO │ 400 mg/L │ 60.0 mg/L │ 180 mg/L");
-
-        lblEficDBO.setText("Eficiencia DBO: [ ___ ] %");
-
-        lblEficSST.setText("Eficiencia SST: [ ___ ] %");
-
-        lblConsumoTotal.setText("Consumo Total: [ ___ ] kWh/día");
-
-        lblLodosTotales.setText("Lodos Totales: [ ___ ] kg/día");
 
         btnVolver.setText("← Volver a Tratamiento final");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
@@ -183,6 +254,87 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(0, 102, 102));
         jLabel1.setText("Evaluación");
 
+        txtDiagnostico.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Comparación Normativa (Res. 0631/2015)", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Black", 0, 13))); // NOI18N
+        jPanel1.setOpaque(false);
+
+        lblDashSST.setText("SST             │ 220 mg/L │ 6.6 mg/L    │ 90 mg/L");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel2.setText("Parámetro  |  Entrada     |  Salida     |  Límite Res.0631");
+
+        lblDashDBO.setText("DBO5         │ 200 mg/L │ 20.0 mg/L  │ 90 mg/L");
+
+        lblDashDQO.setText("DQO          │ 400 mg/L │ 60.0 mg/L   │ 180 mg/L");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDashSST)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDashDBO)
+                    .addComponent(lblDashDQO))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDashSST)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDashDBO)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDashDQO)
+                .addContainerGap(26, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Indicadores Globales de la PTAR", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Black", 0, 13))); // NOI18N
+        jPanel2.setOpaque(false);
+
+        lblEficDBO.setText("Eficiencia DBO: [ ___ ] %");
+
+        lblEficSST.setText("Eficiencia SST: [ ___ ] %");
+
+        lblConsumoTotal.setText("Consumo Total: [ ___ ] kWh/día");
+
+        lblLodosTotales.setText("Lodos Totales: [ ___ ] kg/día");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lblLodosTotales)
+                        .addGap(16, 16, 16))
+                    .addComponent(lblConsumoTotal)
+                    .addComponent(lblEficDBO)
+                    .addComponent(lblEficSST))
+                .addContainerGap(69, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblEficDBO)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblEficSST)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblConsumoTotal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblLodosTotales)
+                .addContainerGap(26, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -191,37 +343,30 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(35, 35, 35))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
                         .addComponent(btnVolver)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnReiniciar)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblLodosTotales)
-                                .addComponent(lblConsumoTotal)
-                                .addComponent(lblEficDBO)
-                                .addComponent(lblEficSST))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(69, 69, 69)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnExportar)
-                                .addGap(48, 48, 48))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addContainerGap())))
+                            .addComponent(btnReiniciar)
+                            .addComponent(btnExportar))
+                        .addGap(118, 118, 118))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblDashSST)
-                            .addComponent(lblDashDBO)
-                            .addComponent(lblDashDQO))
-                        .addGap(0, 25, Short.MAX_VALUE))))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtDiagnostico, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,75 +375,66 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel1))
-                .addGap(5, 5, 5)
+                .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblEficDBO)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblEficSST)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblConsumoTotal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblLodosTotales))
+                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(31, 31, 31))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(lblDashSST)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDashDBO)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDashDQO)
-                        .addGap(52, 52, 52)
-                        .addComponent(btnExportar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                        .addComponent(txtDiagnostico, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(btnExportar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVolver)
                     .addComponent(btnReiniciar))
-                .addContainerGap())
+                .addGap(29, 29, 29))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-                                          
-    new Ventana4Clarificacion().setVisible(true);
-    this.dispose();
-    // TODO add your handling code here:
+        new Ventana4Clarificacion().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
-                                            
-    JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setSelectedFile(new java.io.File("Reporte_PTAR_Res0631.txt"));
-    if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-        String ruta = fileChooser.getSelectedFile().getAbsolutePath();
-        if (evaluacion.exportarReporteTXT(ruta)) {
-            JOptionPane.showMessageDialog(this, "¡Reporte exportado exitosamente!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Error al guardar el archivo.", "Error", JOptionPane.ERROR_MESSAGE);
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setSelectedFile(new java.io.File("Reporte_PTAR_Res0631.txt"));
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            String ruta = fileChooser.getSelectedFile().getAbsolutePath();
+            if (!ruta.toLowerCase().endsWith(".txt")) {
+                ruta += ".txt";
+            }
+            if (evaluacion.exportarReporteTXT(ruta)) {
+                try (PrintWriter out = new PrintWriter(new FileWriter(ruta, true))) {
+                    out.println();
+                    out.println("==================================================");
+                    out.println("DIAGNÓSTICO OPERATIVO Y PLAN DE ACCIÓN EN PLANTA:");
+                    out.println(resumenDiagnosticoTexto);
+                    out.println("==================================================");
+                } catch (Exception ignored) {
+                }
+                JOptionPane.showMessageDialog(this, "¡Reporte exportado exitosamente!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al guardar el archivo.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
-    }      // TODO add your handling code here:
     }//GEN-LAST:event_btnExportarActionPerformed
 
     private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarActionPerformed
-                                         
-    Ventana1Captacion v1 = new Ventana1Captacion();
-    v1.setLocationRelativeTo(null);
-    v1.setVisible(true);
-    this.dispose();        // TODO add your handling code here:
+        Ventana1Captacion v1 = new Ventana1Captacion();
+        v1.setLocationRelativeTo(null);
+        v1.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnReiniciarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -309,9 +445,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new Ventana5Evaluacion().setVisible(true));
     }
 
@@ -321,7 +455,10 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private javax.swing.JButton btnVolver;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblConsumoTotal;
     private javax.swing.JLabel lblDashDBO;
     private javax.swing.JLabel lblDashDQO;
@@ -331,5 +468,6 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private javax.swing.JLabel lblEficSST;
     private javax.swing.JLabel lblLodosTotales;
     private javax.swing.JPanel pnlSemaforo;
+    private javax.swing.JLabel txtDiagnostico;
     // End of variables declaration//GEN-END:variables
 }
