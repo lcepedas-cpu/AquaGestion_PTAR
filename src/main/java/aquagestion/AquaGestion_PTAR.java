@@ -1,10 +1,11 @@
 package aquagestion;
 
-import ventanasproyecto.Ventana1Captacion;
+import ventanasproyecto.Ventana0;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 public class AquaGestion_PTAR {
+
     public static void main(String[] args) {
         // Aplicar apariencia del sistema operativo (Look and Feel)
         try {
@@ -13,11 +14,11 @@ public class AquaGestion_PTAR {
             e.printStackTrace();
         }
 
-        // Iniciar la aplicación en el hilo de eventos de Swing
+        // Iniciar la aplicación desde Ventana0 en el hilo de eventos de Swing
         SwingUtilities.invokeLater(() -> {
-            Ventana1Captacion v1 = new Ventana1Captacion();
-            v1.setLocationRelativeTo(null); // Centrar en pantalla
-            v1.setVisible(true);
+            Ventana0 v0 = new Ventana0();
+            v0.setLocationRelativeTo(null); // Centrar en pantalla
+            v0.setVisible(true);
         });
     }
 }
