@@ -1,5 +1,11 @@
 package ventanasproyecto;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JOptionPane;
 
 public class Ventana4Clarificacion extends javax.swing.JFrame {
@@ -14,6 +20,8 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
     private double energiaV3 = 15.0;
     private String estadoPlanta = "Normal";
     private boolean alertaMostrada = false;
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana4Clarificacion.class.getName());
+    private Clip sound;
 
     public Ventana4Clarificacion() {
         this(10.0, 220.0, 200.0, 400.0, 77.0, 13.0, 45.0, 120.0, 15.0, "Normal");
@@ -41,7 +49,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         this.setTitle("AquaGestion_PTAR - Etapa 4: Clarificación y Desinfección");
         this.setSize(720, 560);
         this.setLocationRelativeTo(null);
-        procesos.Fondoventana.aplicar(this, "/proyecto/imagenes/Fondo.jpg");
+        procesos.Fondoventana.aplicar(this, "/ventanasproyecto/imagenes/Fondo.jpg");
 
         lblQreal.setText(String.format("Qreal: %.2f L/s", caudalReal));
         lblSstV2.setText(String.format("SST Salida V2: %.2f mg/L", sstSalidaV2));
@@ -62,6 +70,18 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         javax.swing.UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
     }
 
+    private void reproducirAlerta() {
+        try {
+            sound = AudioSystem.getClip();
+            sound.open(AudioSystem.getAudioInputStream(
+                    new BufferedInputStream(getClass().getResourceAsStream("/ventanasproyecto/sonidos/alerta.wav"))
+            ));
+            sound.start();
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+
     private String obtenerSistemaLodosSeleccionado() {
         int idx = jComboBox1.getSelectedIndex();
         if (idx == 2) {
@@ -75,28 +95,35 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
     private void actualizarImagenDesinfeccion() {
         String ruta = "";
         if (rbCloracion.isSelected()) {
-            ruta = "/proyecto/imagenes/cloracion.gif";
+            ruta = "/ventanasproyecto/imagenes/cloracion.gif";
         } else if (rbUV.isSelected()) {
-            ruta = "/proyecto/imagenes/radiacion.gif";
+            ruta = "/ventanasproyecto/imagenes/radiacion.gif";
         } else {
             Desinfeccion.setIcon(null);
             Desinfeccion.setText("");
             return;
         }
 
-        javax.swing.ImageIcon variable = new javax.swing.ImageIcon(getClass().getResource(ruta));
-        Desinfeccion.setIcon(new javax.swing.ImageIcon(
-                variable.getImage().getScaledInstance(Desinfeccion.getWidth(), Desinfeccion.getHeight(), java.awt.Image.SCALE_DEFAULT)
-        ));
+        java.net.URL imgURL = getClass().getResource(ruta);
+        if (imgURL != null) {
+            javax.swing.ImageIcon variable = new javax.swing.ImageIcon(imgURL);
+            Desinfeccion.setIcon(new javax.swing.ImageIcon(
+                    variable.getImage().getScaledInstance(Desinfeccion.getWidth(), Desinfeccion.getHeight(), java.awt.Image.SCALE_DEFAULT)
+            ));
+            Desinfeccion.setText("");
+        } else {
+            Desinfeccion.setIcon(null);
+            Desinfeccion.setText("Sin imagen");
+        }
     }
 
     private void actualizarImagenLodos() {
         int idx = jComboBox1.getSelectedIndex();
         String ruta = "";
         switch (idx) {
-            case 1 -> ruta = "/proyecto/imagenes/purga.jpg";
-            case 2 -> ruta = "/proyecto/imagenes/lecho.jpg";
-            case 3 -> ruta = "/proyecto/imagenes/filtro.jpg";
+            case 1 -> ruta = "/ventanasproyecto/imagenes/purga.jpg";
+            case 2 -> ruta = "/ventanasproyecto/imagenes/lecho.jpg";
+            case 3 -> ruta = "/ventanasproyecto/imagenes/filtro.jpg";
             default -> {
                 Lodos.setIcon(null);
                 Lodos.setText("");
@@ -104,10 +131,17 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
             }
         }
 
-        javax.swing.ImageIcon variable = new javax.swing.ImageIcon(getClass().getResource(ruta));
-        Lodos.setIcon(new javax.swing.ImageIcon(
-                variable.getImage().getScaledInstance(Lodos.getWidth(), Lodos.getHeight(), java.awt.Image.SCALE_DEFAULT)
-        ));
+        java.net.URL imgURL = getClass().getResource(ruta);
+        if (imgURL != null) {
+            javax.swing.ImageIcon variable = new javax.swing.ImageIcon(imgURL);
+            Lodos.setIcon(new javax.swing.ImageIcon(
+                    variable.getImage().getScaledInstance(Lodos.getWidth(), Lodos.getHeight(), java.awt.Image.SCALE_DEFAULT)
+            ));
+            Lodos.setText("");
+        } else {
+            Lodos.setIcon(null);
+            Lodos.setText("Sin imagen");
+        }
     }
 
     private void actualizarSimulacion(boolean permitirAlertaFlotante) {
@@ -134,7 +168,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
 
         if (finalT.tieneSaturacionLodos() && permitirAlertaFlotante && !alertaMostrada) {
             alertaMostrada = true;
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             String mensaje = String.format(
                     "¡ALERTA DE GESTIÓN DE LODOS!\n\n"
                     + "La acumulación bruta de lodos (%.2f kg/día) supera la capacidad de purga habitual (150,00 kg/día).\n"
@@ -150,9 +184,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         }
     }
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana4Clarificacion.class.getName());
-
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         bgDesinfeccion = new javax.swing.ButtonGroup();
@@ -376,29 +408,29 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void rbCloracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbCloracionActionPerformed
+    private void rbCloracionActionPerformed(java.awt.event.ActionEvent evt) {                                            
         actualizarImagenDesinfeccion();
         actualizarSimulacion(true);
-    }//GEN-LAST:event_rbCloracionActionPerformed
+    }                                           
 
-    private void rbUVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbUVActionPerformed
+    private void rbUVActionPerformed(java.awt.event.ActionEvent evt) {                                     
         actualizarImagenDesinfeccion();
         actualizarSimulacion(true);
-    }//GEN-LAST:event_rbUVActionPerformed
+    }                                    
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {                                          
         new Ventana3Reactor(
                 caudalReal, sstBruto, dboBruto, dqoBruto,
                 sstSalidaV2, dboBruto * 0.65, dqoBruto * 0.65, lodosPrimarios, estadoPlanta
         ).setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btnVolverActionPerformed
+    }                                         
 
-    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {                                             
         if (!rbCloracion.isSelected() && !rbUV.isSelected()) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             JOptionPane.showMessageDialog(
                     this,
                     "Debe seleccionar un método de desinfección antes de continuar.",
@@ -409,7 +441,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         }
 
         if (jComboBox1.getSelectedIndex() == 0) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             JOptionPane.showMessageDialog(
                     this,
                     "Debe seleccionar una opción de gestión y deshidratación de lodos antes de continuar.",
@@ -428,7 +460,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         finalT.setSistemaLodos(sistemaLodos);
 
         if (finalT.requiereAccionLodos()) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             JOptionPane.showMessageDialog(
                     this,
                     String.format("⚠️ CAPACIDAD DE PURGA EXCEDIDA\n\n"
@@ -451,13 +483,13 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         v5.setLocationRelativeTo(null);
         v5.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btnSiguienteActionPerformed
+    }                                            
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         if (jComboBox1.getSelectedIndex() > 0 && !rbCloracion.isSelected() && !rbUV.isSelected()) {
             jComboBox1.setSelectedIndex(0);
             Lodos.setIcon(null);
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             JOptionPane.showMessageDialog(
                     this,
                     "Primero debe seleccionar el método de desinfección (Cloración o Radiación UV).",
@@ -468,7 +500,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         }
         actualizarImagenLodos();
         actualizarSimulacion(true);
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }                                          
 
     public static void main(String args[]) {
         try {
@@ -485,7 +517,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new Ventana4Clarificacion().setVisible(true));
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JLabel Desinfeccion;
     private javax.swing.JLabel Lodos;
     private javax.swing.ButtonGroup bgDesinfeccion;
@@ -509,5 +541,5 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
     private javax.swing.JLabel lblSstV2;
     private javax.swing.JRadioButton rbCloracion;
     private javax.swing.JRadioButton rbUV;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

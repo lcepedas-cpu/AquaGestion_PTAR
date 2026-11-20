@@ -10,4 +10,20 @@
         <maven.compiler.release>27</maven.compiler.release>
         <exec.mainClass>com.mycompany.aquagestion_ptar.AquaGestion_PTAR</exec.mainClass>
     </properties>
+    <build>
+    <resources>
+        <resource>
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.jpg</include>
+                <include>**/*.png</include>
+                <include>**/*.gif</include>
+                <include>**/*.wav</include>
+            </includes>
+        </resource>
+        <resource>
+            <directory>src/main/resources</directory>
+        </resource>
+    </resources>
+</build>
 </project>

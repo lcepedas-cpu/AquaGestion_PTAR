@@ -4,13 +4,20 @@
  */
 package ventanasproyecto;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 /**
  *
  * @author Fa051
  */
 public class Ventana3Reactor extends javax.swing.JFrame {
     
-   private double caudalReal = 10.0;
+    private double caudalReal = 10.0;
     private double sstBruto = 220.0;
     private double dboBruto = 200.0;
     private double dqoBruto = 400.0;
@@ -19,6 +26,8 @@ public class Ventana3Reactor extends javax.swing.JFrame {
     private double dqoEntrada = 260.0;
     private double lodosPrimarios = 120.0;
     private String estadoPlanta = "Normal";
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana3Reactor.class.getName());
+    private Clip sound;
 
     public Ventana3Reactor() {
         this(10.0, 220.0, 200.0, 400.0, 77.0, 130.0, 260.0, 120.0, "Normal");
@@ -47,9 +56,9 @@ public class Ventana3Reactor extends javax.swing.JFrame {
 
         this.setTitle("AquaGestion_PTAR - Etapa 3: Reactor Biológico");
        
-        this.setSize(720,560);
+        this.setSize(720, 560);
         this.setLocationRelativeTo(null);
-        procesos.Fondoventana.aplicar(this, "/proyecto/imagenes/Fondo.jpg");
+        procesos.Fondoventana.aplicar(this, "/ventanasproyecto/imagenes/Fondo.jpg");
 
         cargarGifAireacion();
 
@@ -64,19 +73,31 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         lblConsumoEnergia.setText("Consumo Energético: -- kWh/día");
     }
 
+    private void reproducirAlerta() {
+        try {
+            sound = AudioSystem.getClip();
+            sound.open(AudioSystem.getAudioInputStream(
+                    new BufferedInputStream(getClass().getResourceAsStream("/ventanasproyecto/sonidos/alerta.wav"))
+            ));
+            sound.start();
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+
     private void cargarGifAireacion() {
-        java.net.URL url = getClass().getResource("/proyecto/imagenes/aireacion.gif");
+        java.net.URL url = getClass().getResource("/ventanasproyecto/imagenes/aireacion.gif");
         if (url != null) {
             lblAireacion.setIcon(new javax.swing.ImageIcon(url));
             lblAireacion.setText("");
         }
     }
 
-   private void actualizarSimulacion(boolean desdeEnter) {
+    private void actualizarSimulacion(boolean desdeEnter) {
         String textoOd = txtOxigeno.getText().trim();
         if (textoOd.isEmpty()) {
             if (desdeEnter) {
-                procesos.ReproductorAudio.reproducirAlerta();
+                reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "Por favor, ingrese la cantidad de Oxígeno Disuelto (OD).",
                         "Campo vacío", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -86,7 +107,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         }
 
         if (textoOd.contains(",")) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "No se permite el uso de coma (,). Use punto (.) para decimales, por ejemplo: 1.56",
                     "Use punto decimal", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -97,7 +118,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         try {
             double od = Double.parseDouble(textoOd);
             if (od < 0) {
-                procesos.ReproductorAudio.reproducirAlerta();
+                reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "El Oxígeno Disuelto (OD) no puede ser un valor negativo.",
                         "Dato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -107,7 +128,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
 
             if (!rbControlAuto.isSelected() && !rbControlManual.isSelected()) {
                 if (desdeEnter) {
-                    procesos.ReproductorAudio.reproducirAlerta();
+                    reproducirAlerta();
                     javax.swing.JOptionPane.showMessageDialog(this,
                             "Ahora seleccione el modo de Control del Reactor (Automático o Manual).",
                             "Paso siguiente", javax.swing.JOptionPane.INFORMATION_MESSAGE);
@@ -130,7 +151,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
             lblConsumoEnergia.setText(String.format("Consumo Energético: %.2f kWh/día", reactor.getConsumoEnergiaKwhDia()));
 
             if (od < umbralesOD[0] || reactor.tieneRiesgoAnoxia()) {
-                procesos.ReproductorAudio.reproducirAlerta();
+                reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "🚨 ALERTA CRÍTICA DE ANOXIA (OD < 1.0 mg/L)\n\n"
                         + "Riesgo de muerte bacteriana por falta de oxígeno.\n"
@@ -138,7 +159,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
                         "Alerta Operativa - Reactor Biológico",
                         javax.swing.JOptionPane.ERROR_MESSAGE);
             } else if (od > umbralesOD[3]) {
-                procesos.ReproductorAudio.reproducirAlerta();
+                reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "⚠️ ALERTA DE EFICIENCIA (OD > 4.0 mg/L)\n\n"
                         + "Reactor sobre-oxigenado. Inyección de aire suspendida para evitar desperdicio de energía eléctrica.",
@@ -147,7 +168,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
             }
 
         } catch (NumberFormatException e) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Ingrese un valor numérico válido para el Oxígeno Disuelto (use punto para decimales).",
                     "Formato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -155,15 +176,13 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         }
     }
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana3Reactor.class.getName());
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
@@ -394,17 +413,17 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void txtOxigenoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtOxigenoActionPerformed
-    actualizarSimulacion(true);        // TODO add your handling code here:
-    }//GEN-LAST:event_txtOxigenoActionPerformed
+    private void txtOxigenoActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        actualizarSimulacion(true);
+    }                                          
 
-    private void rbControlAutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbControlAutoActionPerformed
+    private void rbControlAutoActionPerformed(java.awt.event.ActionEvent evt) {                                              
         if (txtOxigeno.getText().trim().isEmpty()) {
             buttonGroup1.clearSelection();
             lblImgControl.setIcon(null);
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Primero debe ingresar la cantidad de Oxígeno Disuelto (OD).",
                     "Campo vacío", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -412,17 +431,14 @@ public class Ventana3Reactor extends javax.swing.JFrame {
             return;
         }
         actualizarImagenControl();
-        actualizarSimulacion(false);  
-// TODO add your handling code here:    
-    
-    }//GEN-LAST:event_rbControlAutoActionPerformed
+        actualizarSimulacion(false);
+    }                                             
 
-    private void rbControlManualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbControlManualActionPerformed
-       
+    private void rbControlManualActionPerformed(java.awt.event.ActionEvent evt) {                                                
         if (txtOxigeno.getText().trim().isEmpty()) {
             buttonGroup1.clearSelection();
             lblImgControl.setIcon(null);
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Primero debe ingresar la cantidad de Oxígeno Disuelto (OD).",
                     "Campo vacío", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -430,40 +446,43 @@ public class Ventana3Reactor extends javax.swing.JFrame {
             return;
         }
         actualizarImagenControl();
-        actualizarSimulacion(false); 
-// TODO add your handling code here:
-    }//GEN-LAST:event_rbControlManualActionPerformed
-
-    
- 
+        actualizarSimulacion(false);
+    }                                               
 
     private void actualizarImagenControl() {
         String ruta = "";
         if (rbControlAuto.isSelected()) {
-            ruta = "/proyecto/imagenes/umbrales.jpg";
+            ruta = "/ventanasproyecto/imagenes/umbrales.jpg";
         } else if (rbControlManual.isSelected()) {
-            ruta = "/proyecto/imagenes/sopladores.jpg";
+            ruta = "/ventanasproyecto/imagenes/sopladores.jpg";
         } else {
             lblImgControl.setIcon(null);
             lblImgControl.setText("");
             return;
         }
 
-      javax.swing.ImageIcon variable = new javax.swing.ImageIcon(getClass().getResource(ruta));
-        lblImgControl.setIcon(new javax.swing.ImageIcon(
-                variable.getImage().getScaledInstance(lblImgControl.getWidth(), lblImgControl.getHeight(), java.awt.Image.SCALE_DEFAULT)
-        ));
-        lblImgControl.setText("");
+        java.net.URL imgURL = getClass().getResource(ruta);
+        if (imgURL != null) {
+            javax.swing.ImageIcon variable = new javax.swing.ImageIcon(imgURL);
+            lblImgControl.setIcon(new javax.swing.ImageIcon(
+                    variable.getImage().getScaledInstance(lblImgControl.getWidth(), lblImgControl.getHeight(), java.awt.Image.SCALE_DEFAULT)
+            ));
+            lblImgControl.setText("");
+        } else {
+            lblImgControl.setIcon(null);
+            lblImgControl.setText("Sin imagen");
+        }
     }
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-    new Ventana2Tratamiento(caudalReal, sstBruto, dboBruto, dqoBruto, estadoPlanta).setVisible(true);
-    this.dispose();        // TODO add your handling code here:
-    }//GEN-LAST:event_btnVolverActionPerformed
 
-    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-    String textoOd = txtOxigeno.getText().trim();
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {                                          
+        new Ventana2Tratamiento(caudalReal, sstBruto, dboBruto, dqoBruto, estadoPlanta).setVisible(true);
+        this.dispose();
+    }                                         
+
+    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        String textoOd = txtOxigeno.getText().trim();
         if (textoOd.isEmpty()) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Por favor, ingrese la cantidad de Oxígeno Disuelto (OD).",
                     "Campo vacío", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -471,7 +490,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
             return;
         }
         if (textoOd.contains(",")) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "No se permite el uso de coma (,). Use punto (.) para decimales, por ejemplo: 1.56",
                     "Use punto decimal", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -480,7 +499,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         }
 
         if (!rbControlAuto.isSelected() && !rbControlManual.isSelected()) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Por favor, seleccione un Modo de Control de Aireación antes de continuar.",
                     "Selección requerida", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -490,7 +509,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         try {
             double od = Double.parseDouble(textoOd);
             if (od < 0) {
-                procesos.ReproductorAudio.reproducirAlerta();
+                reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "El Oxígeno Disuelto (OD) no puede ser negativo.",
                         "Dato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -509,13 +528,13 @@ public class Ventana3Reactor extends javax.swing.JFrame {
             v4.setVisible(true);
             this.dispose();
         } catch (NumberFormatException e) {
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Ingrese un valor numérico válido para el Oxígeno Disuelto (ej: 2.5).",
                     "Formato inválido", javax.swing.JOptionPane.WARNING_MESSAGE);
             txtOxigeno.requestFocus();
         }
-    }//GEN-LAST:event_btnSiguienteActionPerformed
+    }                                            
 
     /**
      * @param args the command line arguments
@@ -542,7 +561,7 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new Ventana3Reactor().setVisible(true));
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JButton btnVolver;
     private javax.swing.ButtonGroup buttonGroup1;
@@ -567,5 +586,5 @@ public class Ventana3Reactor extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbControlAuto;
     private javax.swing.JRadioButton rbControlManual;
     private javax.swing.JTextField txtOxigeno;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

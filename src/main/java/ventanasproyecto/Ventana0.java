@@ -20,7 +20,7 @@ public class Ventana0 extends javax.swing.JFrame {
         this.setSize(720, 560);
         this.setLocationRelativeTo(null);
         this.setTitle("AquaGestion_PTAR - Bienvenida");
-        procesos.Fondoventana.aplicar(this, "/proyecto/imagenes/Fondo.jpg");
+        procesos.Fondoventana.aplicar(this, "/ventanasproyecto/imagenes/Fondo.jpg");
         this.getRootPane().setDefaultButton(jButton2);
         javax.swing.UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
     }

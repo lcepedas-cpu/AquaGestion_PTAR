@@ -5,10 +5,16 @@
 package ventanasproyecto;
 
 import java.awt.Color;
+import java.io.BufferedInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -27,6 +33,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
 
     private procesos.EvaluacionEfluente evaluacion;
     private String resumenDiagnosticoTexto = "";
+    private Clip sound;
 
     public Ventana5Evaluacion() {
         this(220.0, 6.6, 200.0, 20.0, 400.0, 60.0, 40.0, 135.0);
@@ -48,10 +55,22 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         this.setTitle("AquaGestion_PTAR - Etapa 5: Evaluación y Cumplimiento");
         this.setSize(720, 560);
         this.setLocationRelativeTo(null);
-        procesos.Fondoventana.aplicar(this, "/proyecto/imagenes/Fondo.jpg");
+        procesos.Fondoventana.aplicar(this, "/ventanasproyecto/imagenes/Fondo.jpg");
         this.getRootPane().setDefaultButton(btnReiniciar);
 
         cargarDatos();
+    }
+
+    private void reproducirAlerta() {
+        try {
+            sound = AudioSystem.getClip();
+            sound.open(AudioSystem.getAudioInputStream(
+                    new BufferedInputStream(getClass().getResourceAsStream("/ventanasproyecto/sonidos/alerta.wav"))
+            ));
+            sound.start();
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }
 
     private void cargarDatos() {
@@ -85,7 +104,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             ));
             lblDictamen.setForeground(new Color(183, 28, 28));
             lblDictamen.setText("<html><center><b>&#10008; VERTIMIENTO NO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
-            procesos.ReproductorAudio.reproducirAlerta();
+            reproducirAlerta();
         } else if (hayAlertaPreventiva) {
             Color amarilloFondo = new Color(255, 248, 225);
             Color amarilloBorde = new Color(245, 127, 23);
@@ -188,7 +207,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana5Evaluacion.class.getName());
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
@@ -396,14 +415,14 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {                                          
         new Ventana4Clarificacion().setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btnVolverActionPerformed
+    }                                         
 
-    private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
+    private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {                                            
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setSelectedFile(new java.io.File("Reporte_PTAR_Res0631.txt"));
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -425,14 +444,14 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Error al guardar el archivo.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_btnExportarActionPerformed
+    }                                           
 
-    private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarActionPerformed
+    private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {                                             
         Ventana1Captacion v1 = new Ventana1Captacion();
         v1.setLocationRelativeTo(null);
         v1.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btnReiniciarActionPerformed
+    }                                            
 
     public static void main(String args[]) {
         try {
@@ -449,7 +468,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new Ventana5Evaluacion().setVisible(true));
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton btnExportar;
     private javax.swing.JButton btnReiniciar;
     private javax.swing.JButton btnVolver;
@@ -469,5 +488,5 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private javax.swing.JLabel lblLodosTotales;
     private javax.swing.JPanel pnlSemaforo;
     private javax.swing.JLabel txtDiagnostico;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
