@@ -54,9 +54,9 @@ package ventanasproyecto;
         lblImagenFuente = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(720, 560));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 13)); // NOI18N
         jLabel1.setText("1.Ingrese el caudal (Qbase en L/s):");
@@ -102,6 +102,9 @@ package ventanasproyecto;
         jLabel6.setForeground(new java.awt.Color(0, 102, 102));
         jLabel6.setText("Captación");
 
+        jButton1.setText("← Volver ");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -139,7 +142,9 @@ package ventanasproyecto;
                             .addComponent(jLabel3))
                         .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSiguiente)
                 .addGap(33, 33, 33))
         );
@@ -179,7 +184,9 @@ package ventanasproyecto;
                         .addGap(18, 18, 18)
                         .addComponent(rbFalla)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)))
-                .addComponent(btnSiguiente)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSiguiente)
+                    .addComponent(jButton1))
                 .addGap(42, 42, 42))
         );
 
@@ -363,6 +370,14 @@ package ventanasproyecto;
         btnSiguiente.doClick();
     }//GEN-LAST:event_txtCaudalActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        Ventana0 v0 = new Ventana0();
+v0.setLocationRelativeTo(null);
+v0.setVisible(true);
+this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -430,6 +445,7 @@ package ventanasproyecto;
     private javax.swing.JButton btnSiguiente;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbFuente;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
