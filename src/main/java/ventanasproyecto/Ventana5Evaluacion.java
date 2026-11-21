@@ -207,7 +207,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana5Evaluacion.class.getName());
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
@@ -415,14 +415,14 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>                        
+    }// </editor-fold>//GEN-END:initComponents
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {                                          
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         new Ventana4Clarificacion().setVisible(true);
         this.dispose();
-    }                                         
+    }//GEN-LAST:event_btnVolverActionPerformed
 
-    private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setSelectedFile(new java.io.File("Reporte_PTAR_Res0631.txt"));
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -444,14 +444,14 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Error al guardar el archivo.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }                                           
+    }//GEN-LAST:event_btnExportarActionPerformed
 
-    private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarActionPerformed
         Ventana1Captacion v1 = new Ventana1Captacion();
         v1.setLocationRelativeTo(null);
         v1.setVisible(true);
         this.dispose();
-    }                                            
+    }//GEN-LAST:event_btnReiniciarActionPerformed
 
     public static void main(String args[]) {
         try {
@@ -468,7 +468,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new Ventana5Evaluacion().setVisible(true));
     }
 
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExportar;
     private javax.swing.JButton btnReiniciar;
     private javax.swing.JButton btnVolver;
@@ -488,5 +488,5 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private javax.swing.JLabel lblLodosTotales;
     private javax.swing.JPanel pnlSemaforo;
     private javax.swing.JLabel txtDiagnostico;
-    // End of variables declaration                   
+    // End of variables declaration//GEN-END:variables
 }

@@ -184,7 +184,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         bgDesinfeccion = new javax.swing.ButtonGroup();
@@ -408,27 +408,27 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>                        
+    }// </editor-fold>//GEN-END:initComponents
 
-    private void rbCloracionActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void rbCloracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbCloracionActionPerformed
         actualizarImagenDesinfeccion();
         actualizarSimulacion(true);
-    }                                           
+    }//GEN-LAST:event_rbCloracionActionPerformed
 
-    private void rbUVActionPerformed(java.awt.event.ActionEvent evt) {                                     
+    private void rbUVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbUVActionPerformed
         actualizarImagenDesinfeccion();
         actualizarSimulacion(true);
-    }                                    
+    }//GEN-LAST:event_rbUVActionPerformed
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {                                          
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         new Ventana3Reactor(
                 caudalReal, sstBruto, dboBruto, dqoBruto,
                 sstSalidaV2, dboBruto * 0.65, dqoBruto * 0.65, lodosPrimarios, estadoPlanta
         ).setVisible(true);
         this.dispose();
-    }                                         
+    }//GEN-LAST:event_btnVolverActionPerformed
 
-    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         if (!rbCloracion.isSelected() && !rbUV.isSelected()) {
             reproducirAlerta();
             JOptionPane.showMessageDialog(
@@ -483,9 +483,9 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         v5.setLocationRelativeTo(null);
         v5.setVisible(true);
         this.dispose();
-    }                                            
+    }//GEN-LAST:event_btnSiguienteActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         if (jComboBox1.getSelectedIndex() > 0 && !rbCloracion.isSelected() && !rbUV.isSelected()) {
             jComboBox1.setSelectedIndex(0);
             Lodos.setIcon(null);
@@ -500,7 +500,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         }
         actualizarImagenLodos();
         actualizarSimulacion(true);
-    }                                          
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     public static void main(String args[]) {
         try {
@@ -517,7 +517,7 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new Ventana4Clarificacion().setVisible(true));
     }
 
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Desinfeccion;
     private javax.swing.JLabel Lodos;
     private javax.swing.ButtonGroup bgDesinfeccion;
@@ -541,5 +541,5 @@ public class Ventana4Clarificacion extends javax.swing.JFrame {
     private javax.swing.JLabel lblSstV2;
     private javax.swing.JRadioButton rbCloracion;
     private javax.swing.JRadioButton rbUV;
-    // End of variables declaration                   
+    // End of variables declaration//GEN-END:variables
 }
