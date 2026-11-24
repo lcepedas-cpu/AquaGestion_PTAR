@@ -46,7 +46,6 @@ public class EvaluacionEfluente {
         return Math.max(0, ((dqoEntrada - dqoSalida) / dqoEntrada) * 100.0);
     }
 
-    // Evaluación normativa mediante arreglos y estructura repetitiva (for)
     public boolean cumpleNormativaGlobal() {
         double[] salidas = {sstSalida, dboSalida, dqoSalida};
         double[] limites = {LIMITE_SST, LIMITE_DBO, LIMITE_DQO};
@@ -59,7 +58,6 @@ public class EvaluacionEfluente {
         return true;
     }
 
-    // Exportación del reporte a archivo físico .TXT con formato a dos decimales
     public boolean exportarReporteTXT(String rutaArchivo) {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String fechaHora = LocalDateTime.now().format(formato);

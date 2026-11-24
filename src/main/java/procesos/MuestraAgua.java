@@ -2,8 +2,8 @@ package procesos;
 
 public class MuestraAgua {
     private double caudalBase;
-    private String tipoFuente;       // "Doméstica", "Industrial", "Hospitalaria"
-    private String estadoOperativo;  // "Normal", "Sobrecarga por Lluvia", "Falla Operativa"
+    private String tipoFuente;       
+    private String estadoOperativo;  
 
     private double sstBase;
     private double dboBase;
@@ -19,7 +19,6 @@ public class MuestraAgua {
     }
 
     private void calcularVariablesBase() {
-        // Asignación de concentraciones iniciales según el origen
         switch (tipoFuente) {
             case "Industrial":
                 this.sstBase = 600.0;
@@ -39,7 +38,6 @@ public class MuestraAgua {
                 break;
         }
 
-        // Multiplicadores según el estado de la planta
         switch (estadoOperativo) {
             case "Sobrecarga por Lluvia":
                 this.factorCaudal = 2.5;
@@ -57,7 +55,6 @@ public class MuestraAgua {
         }
     }
 
-    // Métodos que entregan los datos ajustados hacia la Ventana 2
     public double getCaudalReal() { return caudalBase * factorCaudal; }
     public double getSstInicial() { return sstBase * factorCarga; }
     public double getDboInicial() { return dboBase * factorCarga; }

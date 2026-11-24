@@ -139,7 +139,6 @@ public class Ventana3Reactor extends javax.swing.JFrame {
 
             boolean esAuto = rbControlAuto.isSelected();
 
-            // Arreglo de umbrales [0]=Anoxia, [1]=Mínimo Óptimo, [2]=Máximo Óptimo, [3]=Sobre-oxigenación
             double[] umbralesOD = {1.0, 1.5, 3.0, 4.0};
 
             procesos.ReactorBiologico reactor =

@@ -213,7 +213,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         try {
-            // 1. Validación de Caudal Base (#1)
+            
             if (txtCaudal.getText().trim().isEmpty()) {
                 reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
@@ -223,7 +223,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
                 return;
             }
 
-            // 2. Validación de Tipo de Fuente (#2)
+           
             if (cbFuente.getSelectedIndex() == 0) {
                 reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
@@ -233,7 +233,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
                 return;
             }
 
-            // 3. Validación de Estado Operativo (#3)
+            
             if (!rbNormal.isSelected() && !rbLluvia.isSelected() && !rbFalla.isSelected()) {
                 reproducirAlerta();
                 javax.swing.JOptionPane.showMessageDialog(this,
@@ -243,7 +243,7 @@ public class Ventana1Captacion extends javax.swing.JFrame {
                 return;
             }
 
-            // 4. Procesamiento de datos
+            
             double qBase = Double.parseDouble(txtCaudal.getText().trim());
             String fuente = cbFuente.getSelectedItem().toString();
 
@@ -265,7 +265,6 @@ public class Ventana1Captacion extends javax.swing.JFrame {
                 estado = "Falla Operativa";
             }
 
-            // 5. Creación del objeto Muestra y Alerta Operativa si hay contingencia
             procesos.MuestraAgua muestra
                     = new procesos.MuestraAgua(qBase, fuente, estado);
 
@@ -312,19 +311,18 @@ public class Ventana1Captacion extends javax.swing.JFrame {
 
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
         try {
-            // 1. Validar Caudal (#1)
+            
             if (txtCaudal.getText().trim().isEmpty()) {
                 txtResumen.setText("⚠️ ERROR: Ingrese un valor en el Caudal Base (#1).");
                 return;
             }
 
-            // 2. Validar Tipo de Fuente (#2)
+           
             if (cbFuente.getSelectedIndex() == 0) {
                 txtResumen.setText("⚠️ ERROR: Seleccione el Tipo de Fuente (#2).");
                 return;
             }
 
-            // 3. Validar Estado Operativo (#3)
             if (!rbNormal.isSelected() && !rbLluvia.isSelected() && !rbFalla.isSelected()) {
                 txtResumen.setText("⚠️ ERROR: Seleccione el Estado Operativo (#3).");
                 return;

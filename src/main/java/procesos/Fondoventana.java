@@ -32,7 +32,6 @@ public class Fondoventana {
         ventana.getLayeredPane().add(lblFondo, JLayeredPane.FRAME_CONTENT_LAYER);
         ((JPanel) ventana.getContentPane()).setOpaque(false);
 
-        // Vuelve transparentes automáticamente los paneles y radio buttons internos
         hacerTransparentes(ventana.getContentPane().getComponents());
     }
 
@@ -42,7 +41,6 @@ public class Fondoventana {
                 ((JPanel) c).setOpaque(false);
                 hacerTransparentes(((JPanel) c).getComponents());
             } else if (c instanceof AbstractButton && !(c instanceof javax.swing.JButton)) {
-                // Radio buttons y checkboxes sin cuadro gris, manteniendo los JButton normales
                 ((AbstractButton) c).setOpaque(false);
             }
         }

@@ -92,7 +92,6 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         boolean alertaDQO = cumpleDQO && dqoSalida >= (limDQO * 0.80);
         boolean hayAlertaPreventiva = cumpleGlobal && (alertaSST || alertaDBO || alertaDQO);
 
-        // 1. Semáforo de 3 niveles (Verde / Amarillo / Rojo)
         pnlSemaforo.setOpaque(true);
         if (!cumpleGlobal) {
             Color rojoFondo = new Color(255, 235, 238);
@@ -127,7 +126,6 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             lblDictamen.setText("<html><center><b>&#10004; VERTIMIENTO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
         }
 
-        // 2. Tablero Resumen con color individual por parámetro
         Color okColor = new Color(27, 94, 32);
         Color warnColor = new Color(230, 81, 0);
         Color errColor = new Color(198, 40, 40);
@@ -141,7 +139,6 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         lblDashDQO.setText(String.format("DQO   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, limDQO));
         lblDashDQO.setForeground(!cumpleDQO ? errColor : (alertaDQO ? warnColor : okColor));
 
-        // 3. Diagnóstico operativo y acciones recomendadas en planta (txtDiagnostico)
         txtDiagnostico.setHorizontalAlignment(SwingConstants.LEFT);
         txtDiagnostico.setVerticalAlignment(SwingConstants.TOP);
         txtDiagnostico.setOpaque(true);
@@ -198,7 +195,6 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             txtDiagnostico.setText("<html><b>Recomendación Preventiva:</b> " + String.join(" ", acciones) + "</html>");
         }
 
-        // 4. Estadísticas Globales
         lblEficDBO.setText(String.format("Eficiencia DBO: %.1f %%", evaluacion.getEficienciaDBO()));
         lblEficSST.setText(String.format("Eficiencia SST: %.1f %%", evaluacion.getEficienciaSST()));
         lblConsumoTotal.setText(String.format("Consumo Total: %.1f kWh/día", consumoTotal));

@@ -5,7 +5,7 @@ public class ReactorBiologico {
     private double sstEntrada;
     private double dboEntrada;
     private double dqoEntrada;
-    private double oxigenoDisuelto; // OD en mg/L
+    private double oxigenoDisuelto; 
     private boolean modoAutomatico;
 
     public ReactorBiologico(double caudalReal, double sstEntrada, double dboEntrada, double dqoEntrada, double oxigenoDisuelto, boolean modoAutomatico) {
@@ -17,11 +17,10 @@ public class ReactorBiologico {
         this.modoAutomatico = modoAutomatico;
     }
 
-    // Eficiencia según la disponibilidad de oxígeno
     public double getEficienciaDBO() {
-        if (oxigenoDisuelto < 1.0) return 0.40; // Anoxia / Muerte bacteriana
+        if (oxigenoDisuelto < 1.0) return 0.40; 
         if (oxigenoDisuelto < 2.0) return 0.75;
-        return 0.90; // Rango óptimo (>= 2.0 mg/L)
+        return 0.90; 
     }
 
     public double getDboSalida() {
@@ -32,21 +31,18 @@ public class ReactorBiologico {
         return dqoEntrada * (1.0 - (getEficienciaDBO() * 0.85));
     }
 
-    // Masa de DBO removida en kg/día: Q (L/s) * Delta_DBO (mg/L) * 0.0864
     public double getMasaDboRemovidaKgDia() {
         double deltaDbo = dboEntrada - getDboSalida();
         return caudalReal * deltaDbo * 0.0864;
     }
 
-    // Estimación de consumo energético en kWh/día
     public double getConsumoEnergiaKwhDia() {
         if (oxigenoDisuelto < 1.0 || !modoAutomatico) {
-            return caudalReal * 15.0; // Sopladores al 100% (potencia máxima continua)
+            return caudalReal * 15.0; 
         }
-        return getMasaDboRemovidaKgDia() * 1.6; // Consumo optimizado dinámico
+        return getMasaDboRemovidaKgDia() * 1.6; 
     }
 
-    // Alerta operativa por baja concentración de Oxígeno Disuelto
     public boolean tieneRiesgoAnoxia() {
         return oxigenoDisuelto < 1.0;
     }
