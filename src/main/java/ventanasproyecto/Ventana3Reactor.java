@@ -71,7 +71,10 @@ public class Ventana3Reactor extends javax.swing.JFrame {
         lblDqoSalida.setText("DQO Salida: -- mg/L");
         lblMasaRemovida.setText("Masa DBO Removida: -- kg/día");
         lblConsumoEnergia.setText("Consumo Energético: -- kWh/día");
+        this.getRootPane().setDefaultButton(btnSiguiente);
     }
+    
+    
 
     private void reproducirAlerta() {
         try {
@@ -257,11 +260,9 @@ public class Ventana3Reactor extends javax.swing.JFrame {
                     .addComponent(lblQreal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSstEntrada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lblDqoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 146, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(lblDqoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblSstEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -4,6 +4,13 @@
  */
 package ventanasproyecto;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 /**
  *
  * @author ASUS
@@ -11,7 +18,7 @@ package ventanasproyecto;
 public class Ventana0 extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana0.class.getName());
-
+     private Clip sound;
     /**
      * Creates new form Ventana0
      */
@@ -23,8 +30,20 @@ public class Ventana0 extends javax.swing.JFrame {
         procesos.Fondoventana.aplicar(this, "/ventanasproyecto/imagenes/Fondo.jpg");
         this.getRootPane().setDefaultButton(btn_iniciar);
         javax.swing.UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+        reproducirinicio();
     }
-
+    private void reproducirinicio() {
+        try {
+            java.io.InputStream audioSrc = getClass().getResourceAsStream("/ventanasproyecto/sonidos/inicio.wav");
+            if (audioSrc != null) {
+                sound = AudioSystem.getClip();
+                sound.open(AudioSystem.getAudioInputStream(new BufferedInputStream(audioSrc)));
+                sound.start();
+            }
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -161,25 +180,27 @@ public class Ventana0 extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Tren, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(parametros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(36, 36, 36)
-                                .addComponent(escenarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(Tren, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(170, 170, 170)
                         .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(286, 286, 286)
-                        .addComponent(btn_salir))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(115, 115, 115)
-                        .addComponent(txt_subtitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txt_subtitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(74, 74, 74)
+                        .addComponent(parametros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addComponent(escenarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 32, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(274, 274, 274)
-                .addComponent(btn_iniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(313, 313, 313)
+                        .addComponent(btn_salir))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(286, 286, 286)
+                        .addComponent(btn_iniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -206,10 +227,16 @@ public class Ventana0 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_iniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_iniciarActionPerformed
+        if (sound != null && sound.isRunning()) {
+            sound.stop();
+            sound.close();
+        }
         Ventana1Captacion v1 = new Ventana1Captacion();
         v1.setLocationRelativeTo(null);
         v1.setVisible(true);
         this.dispose();
+        
+    
     }//GEN-LAST:event_btn_iniciarActionPerformed
 
     private void btn_salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salirActionPerformed

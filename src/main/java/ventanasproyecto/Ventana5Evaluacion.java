@@ -72,6 +72,18 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
+    private void reproducirCumple() {
+        try {
+            java.io.InputStream audioSrc = getClass().getResourceAsStream("/ventanasproyecto/sonidos/cumple.wav");
+            if (audioSrc != null) {
+                sound = AudioSystem.getClip();
+                sound.open(AudioSystem.getAudioInputStream(new BufferedInputStream(audioSrc)));
+                sound.start();
+            }
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
 
     private void cargarDatos() {
         evaluacion = new procesos.EvaluacionEfluente(
@@ -86,7 +98,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         boolean cumpleDQO = dqoSalida <= limDQO;
         boolean cumpleGlobal = cumpleSST && cumpleDBO && cumpleDQO;
 
-        // Umbral preventivo: >= 80% del límite permitido
+        
         boolean alertaSST = cumpleSST && sstSalida >= (limSST * 0.80);
         boolean alertaDBO = cumpleDBO && dboSalida >= (limDBO * 0.80);
         boolean alertaDQO = cumpleDQO && dqoSalida >= (limDQO * 0.80);
@@ -124,19 +136,21 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             ));
             lblDictamen.setForeground(new Color(27, 94, 32));
             lblDictamen.setText("<html><center><b>&#10004; VERTIMIENTO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
+            reproducirCumple();
         }
+        
 
         Color okColor = new Color(27, 94, 32);
         Color warnColor = new Color(230, 81, 0);
         Color errColor = new Color(198, 40, 40);
 
-        lblDashSST.setText(String.format("SST   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", sstEntrada, sstSalida, limSST));
+        lblDashSST.setText(String.format("SST   │  %.2f mg/L  │  %.2f mg/L  │  %.0f mg/L", sstEntrada, sstSalida, limSST));
         lblDashSST.setForeground(!cumpleSST ? errColor : (alertaSST ? warnColor : okColor));
 
-        lblDashDBO.setText(String.format("DBO5  │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dboEntrada, dboSalida, limDBO));
+        lblDashDBO.setText(String.format("DBO5  │  %.2f mg/L  │  %.2f mg/L  │  %.0f mg/L", dboEntrada, dboSalida, limDBO));
         lblDashDBO.setForeground(!cumpleDBO ? errColor : (alertaDBO ? warnColor : okColor));
 
-        lblDashDQO.setText(String.format("DQO   │  %.1f mg/L  │  %.1f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, limDQO));
+        lblDashDQO.setText(String.format("DQO   │  %.2f mg/L  │  %.2f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, limDQO));
         lblDashDQO.setForeground(!cumpleDQO ? errColor : (alertaDQO ? warnColor : okColor));
 
         txtDiagnostico.setHorizontalAlignment(SwingConstants.LEFT);
@@ -195,10 +209,10 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             txtDiagnostico.setText("<html><b>Recomendación Preventiva:</b> " + String.join(" ", acciones) + "</html>");
         }
 
-        lblEficDBO.setText(String.format("Eficiencia DBO: %.1f %%", evaluacion.getEficienciaDBO()));
-        lblEficSST.setText(String.format("Eficiencia SST: %.1f %%", evaluacion.getEficienciaSST()));
-        lblConsumoTotal.setText(String.format("Consumo Total: %.1f kWh/día", consumoTotal));
-        lblLodosTotales.setText(String.format("Lodos Totales: %.1f kg/día", lodosTotales));
+        lblEficDBO.setText(String.format("Eficiencia DBO: %.2f %%", evaluacion.getEficienciaDBO()));
+        lblEficSST.setText(String.format("Eficiencia SST: %.2f %%", evaluacion.getEficienciaSST()));
+        lblConsumoTotal.setText(String.format("Consumo Total: %.2f kWh/día", consumoTotal));
+        lblLodosTotales.setText(String.format("Lodos Totales: %.2f kg/día", lodosTotales));
     }
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana5Evaluacion.class.getName());
@@ -416,6 +430,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         new Ventana4Clarificacion().setVisible(true);
         this.dispose();
+        sound.close();
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed

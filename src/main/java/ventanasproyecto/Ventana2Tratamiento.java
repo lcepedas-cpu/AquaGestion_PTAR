@@ -103,7 +103,6 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(720, 560));
         setResizable(false);
 
         bgFiltrado.add(rbRejillas);
@@ -117,7 +116,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
         btnSiguiente.setText("Pasar a Reactor Biológico →");
         btnSiguiente.addActionListener(this::btnSiguienteActionPerformed);
 
-        btnVolver.setText("← Volver a Cáptación");
+        btnVolver.setText("← Volver a Captación");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
 
         lblImgRejillas.setPreferredSize(new java.awt.Dimension(160, 110));
@@ -138,7 +137,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
 
         lblQreal.setText("Caudal Real : L/s");
 
-        lblEstadoplanta.setText("Estado planta ");
+        lblEstadoplanta.setText("Estado planta:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -149,18 +148,18 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                 .addComponent(lblSstInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(lblQreal)
-                .addGap(60, 60, 60)
-                .addComponent(lblEstadoplanta, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblEstadoplanta, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addGap(11, 11, 11)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSstInicial)
                     .addComponent(lblQreal)
-                    .addComponent(lblEstadoplanta))
+                    .addComponent(lblEstadoplanta, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -208,7 +207,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblImgRejillas, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(rbRejillas, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lblImgSedimentador, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(rbSedimentador))
@@ -217,13 +216,13 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                                 .addComponent(jLabel2)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(186, Short.MAX_VALUE))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGap(45, 45, 45))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,7 +248,7 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblImgSedimentador, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                    .addComponent(lblImgSedimentador, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                     .addComponent(lblImgRejillas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -278,9 +277,25 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
+    private void reproducirSonido(String ruta) {
+        try {
+            if (sound != null && sound.isRunning()) {
+                sound.stop();
+                sound.close();
+            }
+            java.io.InputStream audioSrc = getClass().getResourceAsStream(ruta);
+            if (audioSrc != null) {
+                sound = AudioSystem.getClip();
+                sound.open(AudioSystem.getAudioInputStream(new BufferedInputStream(audioSrc)));
+                sound.start();
+            }
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
 
     private procesos.FiltroPrimario calcularFiltroActual(boolean permitirPopup) {
-        double[] eficiencias = {0.70, 0.85, 0.50}; // [0]=Rejillas, [1]=Sedimentador, [2]=Rejillas con contingencia
+        double[] eficiencias = {0.70, 0.85, 0.50}; 
         double ef = rbSedimentador.isSelected() ? eficiencias[1] : eficiencias[0];
         procesos.FiltroPrimario filtro = new procesos.FiltroPrimario(caudalReal, sstInicial, ef);
 
@@ -390,11 +405,15 @@ public class Ventana2Tratamiento extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void rbRejillasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRejillasActionPerformed
-        alertaMostrada = false;
+       alertaMostrada = false;
         actualizarSimulacion(true);
+        if (!alertaMostrada) {
+            reproducirSonido("/ventanasproyecto/sonidos/rejillas.wav");
+        }
     }//GEN-LAST:event_rbRejillasActionPerformed
 
     private void rbSedimentadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbSedimentadorActionPerformed
+        reproducirSonido("/ventanasproyecto/sonidos/sedimentador.wav");
         actualizarSimulacion(false);
     }//GEN-LAST:event_rbSedimentadorActionPerformed
 
