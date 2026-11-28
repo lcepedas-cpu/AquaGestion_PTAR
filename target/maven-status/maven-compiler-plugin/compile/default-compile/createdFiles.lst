@@ -1,6 +1,14 @@
-ventanasproyecto\Ventana4Clarificacion.class
+procesos\TratamientoFinal.class
+ventanasproyecto\Ventana0.class
 ventanasproyecto\Ventana2Tratamiento.class
+procesos\MuestraAgua.class
+procesos\FiltroPrimario.class
+ventanasproyecto\Ventana3Reactor.class
+procesos\Fondoventana.class
+ventanasproyecto\Ventana4Clarificacion.class
 ventanasproyecto\Ventana1Captacion.class
 ventanasproyecto\Ventana5Evaluacion.class
-ventanasproyecto\Ventana3Reactor.class
-procesos\ReproductorAudio.class
+aquagestion\AquaGestion_PTAR.class
+procesos\ReactorBiologico.class
+procesos\EvaluacionEfluente.class
+procesos\Fondoventana$1.class

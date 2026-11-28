@@ -59,7 +59,7 @@
                       <EmptySpace min="0" pref="109" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
-                      <Component id="pnlSemaforo" pref="280" max="32767" attributes="0"/>
+                      <Component id="pnlSemaforo" pref="283" max="32767" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="txtDiagnostico" min="-2" pref="356" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>

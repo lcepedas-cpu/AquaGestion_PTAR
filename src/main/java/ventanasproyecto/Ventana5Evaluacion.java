@@ -89,9 +89,9 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
       evaluacion = new procesos.EvaluacionEfluente(
                 sstEntrada, sstSalida, dboEntrada, dboSalida, dqoEntrada, dqoSalida, consumoTotal, lodosTotales);
 
-        double limSST = procesos.EvaluacionEfluente.LIMITE_SST; // 90 mg/L
-        double limDBO = procesos.EvaluacionEfluente.LIMITE_DBO; // 90 mg/L
-        double limDQO = procesos.EvaluacionEfluente.LIMITE_DQO; // 180 mg/L
+        double limSST = procesos.EvaluacionEfluente.LIMITE_SST; 
+        double limDBO = procesos.EvaluacionEfluente.LIMITE_DBO; 
+        double limDQO = procesos.EvaluacionEfluente.LIMITE_DQO; 
 
         boolean cumpleSST = sstSalida <= limSST;
         boolean cumpleDBO = dboSalida <= limDBO;

@@ -16,14 +16,14 @@ public class EvaluacionEfluente {
     private double consumoTotalEnergia;
     private double lodosTotales;
 
-    // Límites Resolución 0631 de 2015
     public static final double LIMITE_SST = 90.0;
     public static final double LIMITE_DBO = 90.0;
     public static final double LIMITE_DQO = 180.0;
 
     public EvaluacionEfluente(double sstEntrada, double sstSalida, double dboEntrada, 
                               double dboSalida, double dqoEntrada, double dqoSalida, 
-                              double consumoTotalEnergia, double lodosTotales) {
+                              double consumoTotalEnergia, double lodosTotales) 
+    {
         this.sstEntrada = sstEntrada;
         this.sstSalida = sstSalida;
         this.dboEntrada = dboEntrada;
