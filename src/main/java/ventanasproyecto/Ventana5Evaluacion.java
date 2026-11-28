@@ -58,7 +58,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         procesos.Fondoventana.aplicar(this, "/ventanasproyecto/imagenes/Fondo.jpg");
         this.getRootPane().setDefaultButton(btnReiniciar);
 
-        cargarDatos();
+        javax.swing.SwingUtilities.invokeLater(() -> cargarDatos());
     }
 
     private void reproducirAlerta() {
@@ -86,7 +86,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
     }
 
     private void cargarDatos() {
-        evaluacion = new procesos.EvaluacionEfluente(
+      evaluacion = new procesos.EvaluacionEfluente(
                 sstEntrada, sstSalida, dboEntrada, dboSalida, dqoEntrada, dqoSalida, consumoTotal, lodosTotales);
 
         double limSST = procesos.EvaluacionEfluente.LIMITE_SST; // 90 mg/L
@@ -98,47 +98,40 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         boolean cumpleDQO = dqoSalida <= limDQO;
         boolean cumpleGlobal = cumpleSST && cumpleDBO && cumpleDQO;
 
-        
         boolean alertaSST = cumpleSST && sstSalida >= (limSST * 0.80);
         boolean alertaDBO = cumpleDBO && dboSalida >= (limDBO * 0.80);
         boolean alertaDQO = cumpleDQO && dqoSalida >= (limDQO * 0.80);
         boolean hayAlertaPreventiva = cumpleGlobal && (alertaSST || alertaDBO || alertaDQO);
 
         pnlSemaforo.setOpaque(true);
+        lblDictamen.setHorizontalAlignment(SwingConstants.CENTER);
         if (!cumpleGlobal) {
-            Color rojoFondo = new Color(255, 235, 238);
-            Color rojoBorde = new Color(198, 40, 40);
-            pnlSemaforo.setBackground(rojoFondo);
+            pnlSemaforo.setBackground(new Color(255, 235, 238));
             pnlSemaforo.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(rojoBorde, 2),
+                    BorderFactory.createLineBorder(new Color(198, 40, 40), 2),
                     BorderFactory.createEmptyBorder(6, 10, 6, 10)
             ));
             lblDictamen.setForeground(new Color(183, 28, 28));
             lblDictamen.setText("<html><center><b>&#10008; VERTIMIENTO NO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
             reproducirAlerta();
         } else if (hayAlertaPreventiva) {
-            Color amarilloFondo = new Color(255, 248, 225);
-            Color amarilloBorde = new Color(245, 127, 23);
-            pnlSemaforo.setBackground(amarilloFondo);
+            pnlSemaforo.setBackground(new Color(255, 248, 225));
             pnlSemaforo.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(amarilloBorde, 2),
+                    BorderFactory.createLineBorder(new Color(245, 127, 23), 2),
                     BorderFactory.createEmptyBorder(6, 10, 6, 10)
             ));
             lblDictamen.setForeground(new Color(230, 81, 0));
             lblDictamen.setText("<html><center><b>&#9888; CUMPLE (ALERTA PREVENTIVA)</b><br>Cercano a límite Res. 0631</center></html>");
         } else {
-            Color verdeFondo = new Color(232, 245, 233);
-            Color verdeBorde = new Color(46, 125, 50);
-            pnlSemaforo.setBackground(verdeFondo);
+            pnlSemaforo.setBackground(new Color(232, 245, 233));
             pnlSemaforo.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(verdeBorde, 2),
+                    BorderFactory.createLineBorder(new Color(46, 125, 50), 2),
                     BorderFactory.createEmptyBorder(6, 10, 6, 10)
             ));
             lblDictamen.setForeground(new Color(27, 94, 32));
             lblDictamen.setText("<html><center><b>&#10004; VERTIMIENTO CUMPLE</b><br>Resolución 0631 de 2015</center></html>");
             reproducirCumple();
         }
-        
 
         Color okColor = new Color(27, 94, 32);
         Color warnColor = new Color(230, 81, 0);
@@ -153,31 +146,36 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         lblDashDQO.setText(String.format("DQO   │  %.2f mg/L  │  %.2f mg/L  │  %.0f mg/L", dqoEntrada, dqoSalida, limDQO));
         lblDashDQO.setForeground(!cumpleDQO ? errColor : (alertaDQO ? warnColor : okColor));
 
+        lblEficDBO.setText(String.format("Eficiencia DBO: %.2f %%", evaluacion.getEficienciaDBO()));
+        lblEficSST.setText(String.format("Eficiencia SST: %.2f %%", evaluacion.getEficienciaSST()));
+        lblConsumoTotal.setText(String.format("Consumo Total: %.2f kWh/día", consumoTotal));
+        lblLodosTotales.setText(String.format("Lodos Totales: %.2f kg/día", lodosTotales));
+
         txtDiagnostico.setHorizontalAlignment(SwingConstants.LEFT);
         txtDiagnostico.setVerticalAlignment(SwingConstants.TOP);
         txtDiagnostico.setOpaque(true);
 
         List<String> acciones = new ArrayList<>();
         if (!cumpleSST) {
-            acciones.add("SST fuera de norma: purgar lodos en clarificador y verificar coagulación/sedimentación.");
+            acciones.add("- SST fuera de norma: purgar lodos en clarificador y verificar coagulación/sedimentación.");
         } else if (alertaSST) {
-            acciones.add("SST cercano al límite: monitorear turbidez y purga de sedimentador.");
+            acciones.add("- SST cercano al límite: monitorear turbidez y purga de sedimentador.");
         }
 
         if (!cumpleDBO) {
-            acciones.add("DBO5 excedida: aumentar aireación en el reactor biológico (V3) y revisar tiempo de retención.");
+            acciones.add("- DBO5 excedida: aumentar aireación en el reactor biológico (V3) y revisar tiempo de retención.");
         } else if (alertaDBO) {
-            acciones.add("DBO5 en zona preventiva: ajustar suministro de oxígeno disuelto en V3.");
+            acciones.add("- DBO5 en zona preventiva: ajustar suministro de oxígeno disuelto en V3.");
         }
 
         if (!cumpleDQO) {
-            acciones.add("DQO excedida: controlar vertimientos industriales en entrada (V1) y optimizar oxidación.");
+            acciones.add("- DQO excedida: controlar vertimientos industriales en entrada (V1) y optimizar oxidación.");
         } else if (alertaDQO) {
-            acciones.add("DQO cercana al límite: vigilar carga orgánica no biodegradable en afluente.");
+            acciones.add("- DQO cercana al límite: vigilar carga orgánica no biodegradable en afluente.");
         }
 
         if (lodosTotales > 150.0) {
-            acciones.add("Lodos > 150 kg/día: mantener activo Lecho de Secado o Filtro Prensa.");
+            acciones.add("- Lodos > 150 kg/día: mantener activo Lecho de Secado o Filtro Prensa.");
         }
 
         if (acciones.isEmpty()) {
@@ -189,6 +187,13 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             ));
             resumenDiagnosticoTexto = "Operación óptima: todos los parámetros cumplen holgadamente la Res. 0631/2015. Mantener régimen actual.";
             txtDiagnostico.setText("<html><b>Diagnóstico Operativo:</b> " + resumenDiagnosticoTexto + "</html>");
+
+            JOptionPane.showMessageDialog(this,
+                    "✅ VERTIMIENTO CUMPLE (Resolución 0631 de 2015)\n\n"
+                    + resumenDiagnosticoTexto,
+                    "Dictamen Favorable - Evaluación Final",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         } else if (!cumpleGlobal) {
             txtDiagnostico.setBackground(new Color(255, 235, 238));
             txtDiagnostico.setForeground(new Color(183, 28, 28));
@@ -196,8 +201,16 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                     BorderFactory.createLineBorder(new Color(239, 154, 154), 1),
                     BorderFactory.createEmptyBorder(6, 8, 6, 8)
             ));
-            resumenDiagnosticoTexto = String.join(" | ", acciones);
+            resumenDiagnosticoTexto = String.join("\n", acciones);
             txtDiagnostico.setText("<html><b>Acción Requerida en Planta:</b> " + String.join(" ", acciones) + "</html>");
+
+            JOptionPane.showMessageDialog(this,
+                    "🚨 ALERTA DE INCUMPLIMIENTO (Resolución 0631 de 2015)\n\n"
+                    + "El efluente supera los límites máximos permisibles.\n\n"
+                    + "Acciones requeridas en planta:\n" + resumenDiagnosticoTexto,
+                    "Alerta Normativa - Evaluación Final",
+                    JOptionPane.ERROR_MESSAGE);
+
         } else {
             txtDiagnostico.setBackground(new Color(255, 248, 225));
             txtDiagnostico.setForeground(new Color(230, 81, 0));
@@ -205,15 +218,18 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                     BorderFactory.createLineBorder(new Color(255, 224, 130), 1),
                     BorderFactory.createEmptyBorder(6, 8, 6, 8)
             ));
-            resumenDiagnosticoTexto = String.join(" | ", acciones);
+            resumenDiagnosticoTexto = String.join("\n", acciones);
             txtDiagnostico.setText("<html><b>Recomendación Preventiva:</b> " + String.join(" ", acciones) + "</html>");
-        }
 
-        lblEficDBO.setText(String.format("Eficiencia DBO: %.2f %%", evaluacion.getEficienciaDBO()));
-        lblEficSST.setText(String.format("Eficiencia SST: %.2f %%", evaluacion.getEficienciaSST()));
-        lblConsumoTotal.setText(String.format("Consumo Total: %.2f kWh/día", consumoTotal));
-        lblLodosTotales.setText(String.format("Lodos Totales: %.2f kg/día", lodosTotales));
+            JOptionPane.showMessageDialog(this,
+                    "⚠️ ALERTA PREVENTIVA (Cercano al límite Res. 0631)\n\n"
+                    + "El vertimiento cumple, pero uno o más parámetros superan el 80% del límite.\n\n"
+                    + "Recomendaciones:\n" + resumenDiagnosticoTexto,
+                    "Alerta Preventiva - Evaluación Final",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
+    
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana5Evaluacion.class.getName());
 
@@ -241,7 +257,6 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         lblLodosTotales = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(720, 560));
         setResizable(false);
 
         pnlSemaforo.setPreferredSize(new java.awt.Dimension(200, 100));
@@ -253,16 +268,16 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
         pnlSemaforoLayout.setHorizontalGroup(
             pnlSemaforoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSemaforoLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(lblDictamen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(lblDictamen)
+                .addContainerGap())
         );
         pnlSemaforoLayout.setVerticalGroup(
             pnlSemaforoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSemaforoLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(lblDictamen, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(lblDictamen, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         btnVolver.setText("← Volver a Tratamiento final");
@@ -342,9 +357,7 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(lblLodosTotales)
-                        .addGap(16, 16, 16))
+                    .addComponent(lblLodosTotales)
                     .addComponent(lblConsumoTotal)
                     .addComponent(lblEficDBO)
                     .addComponent(lblEficSST))
@@ -390,12 +403,13 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 109, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtDiagnostico, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 98, Short.MAX_VALUE))
+                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtDiagnostico, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -406,18 +420,15 @@ public class Ventana5Evaluacion extends javax.swing.JFrame {
                     .addComponent(jLabel1))
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(31, 31, 31))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtDiagnostico, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(txtDiagnostico, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlSemaforo, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
                 .addComponent(btnExportar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVolver)
                     .addComponent(btnReiniciar))
